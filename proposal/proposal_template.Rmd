@@ -1,8 +1,8 @@
 ---
 title: "Project Proposal"
 subtitle: "due October 11, 2021 by 11:59 PM "
-author: "Your names and team name here"
-date: ""
+author: "GGPlot Gods -- Ali Raich, Aden Clemente, Lindsey Weyant"
+date: "10/11/21"
 output: pdf_document
 ---
 
