@@ -13,13 +13,13 @@ library(tidyverse)
 library(sf)
 library(viridis)
 library(ggspatial)
-#devtools::install_github("thebioengineer/tidytuesdayR")
+devtools::install_github("thebioengineer/tidytuesdayR")
 
-#tuesdata <- tidytuesdayR::tt_load('2020-02-25')
-#tuesdata <- tidytuesdayR::tt_load(2020, week = 9)
+tuesdata <- tidytuesdayR::tt_load('2020-02-25')
+tuesdata <- tidytuesdayR::tt_load(2020, week = 9)
 
 
-#measles <- tuesdata$measles
+measles <- tuesdata$measles
 ``` 
 
 # Load Data
@@ -44,14 +44,13 @@ measles %>%
 
 # Data Analysis Plan
 
-(Specify the outcome (response, Y) and predictor (explanatory, X) variables you will use to answer your question, as well as the comparison groups you will use, if applicable. You may include very preliminary exploratory data analysis, including some summary statistics and visualizations, along with some explanation on how they help you learn more about your data. Note the statistical method(s) that you believe will be useful in answering your question(s). 
-What results from these specific statistical methods are needed to support your hypothesized answer?)
+Overall, our data analysis will seek to answer how vaccination rates and exemptions vary across states and the type of school. To accomplish this, we will examine the relationship between several variable pairs: overall vaccination status vs. state, overall vaccination status vs. type of school, each type of exemption (personal, religious, and medical) vs. state, and each type of exemption vs. type of school. To analyze vaccination and exemption rates by states, we will use spatial data to show the change in these rates across the country. Then, we can use t-tests to test for significance of vaccination and exemption rates between different types of schools. We will rely on these methods in the place of linear regression since all of the explanatory variables are categorical. If there are significantly lower vaccination rates in private schools vs. other types of schools, this will support our hypothesis.
+
 
 ```{r bar}
 measles%>%
-  group_by(type, mmr) %>%
-  ggplot(aes(x=type, y=mmr)) +
+  mutate(averagevax = mean(mmr)) %>%
+  ggplot(aes(x = type, y = averagevax)) +
   geom_col()
-  
 ```
 
