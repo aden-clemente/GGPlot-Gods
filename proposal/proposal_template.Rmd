@@ -10,6 +10,13 @@ output: pdf_document
 
 ```{r load-packages, message = FALSE, warning = FALSE}
 library(tidyverse) 
+devtools::install_github("thebioengineer/tidytuesdayR")
+
+tuesdata <- tidytuesdayR::tt_load('2020-02-25')
+tuesdata <- tidytuesdayR::tt_load(2020, week = 9)
+
+
+measles <- tuesdata$measles
 ``` 
 
 # Load Data
@@ -18,11 +25,19 @@ library(tidyverse)
 
 # Introduction and Data, including Research Questions
 
+We are choosing to study a data set about Measles Vaccination rates in schools across the country. That data set pulls from about 46,412 schools across 32 states in the years of 2017-2019. The data comes from a Wall Street Journal article published in October 2019 called “What’s the Measles Vaccination Rate at Your Child’s School?” which discusses the increasing rates of unvaccinated people that caused a high number of measles cases in the beginning of 2019. The Wall Street Journal compiled the data by reaching out to state health departments for kindergarten rates for individual schools across the country. Thus, our overarching research question is: How does measles vaccination rates vary across the country and demographics in schools? To do this we will look at the reasons why students are exempted from being vaccinated such as religious, medical or personal reasons and examine if there are any trends between the reason and geographic location. Additionally we will examine trends between the type of school, public, private, or charter, and schools overall vaccination rate. For our analysis we will mostly be using the variables state, type of school, vaccination rate, percentage of students with religious exemptions, percentage with personal exemptions, and percentage with medical exemptions. Since this data is a pre-COVID demonstration of vaccination rates, we can use it to help us tackle the current problem of COVID-19 vaccination. We can look at the vaccination trends of measles to target the geographic areas and types of schools which are less likely to be vaccinated. Furthermore, the rates of different measles vaccine exemptions can shed light on the reasoning behind lagging Covid-19 vaccination rates.
+
 (The introduction should introduce your general research question and your data (where it came from, how it was collected, what are the cases, what are the variables, etc.). Your research questions should be clearly specified. The motivation for your research question should be clear, with citations to relevant literature as appropriate.)
 
 # Glimpse
 
 (Please use `glimpse` for your data, uploaded into the data folder, here.)
+
+```{r glimpse}
+measles %>%
+  glimpse()
+```
+
 
 # Data Analysis Plan
 
