@@ -49,7 +49,10 @@ Overall, our data analysis will seek to answer how vaccination rates and exempti
 
 ```{r bar}
 measles%>%
+  group_by(type) %>%
   mutate(averagevax = mean(mmr)) %>%
+  select(type, averagevax) %>%
+  distinct()%>%
   ggplot(aes(x = type, y = averagevax)) +
   geom_col()
 ```
