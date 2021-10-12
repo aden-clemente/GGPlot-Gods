@@ -8,7 +8,7 @@ output: pdf_document
 
 # Load Packages
 
-```{r load-packages, message = FALSE, warning = FALSE}
+```{r load-packages, message = FALSE, warning = FALSE, echo = FALSE}
 library(tidyverse) 
 library(sf)
 library(viridis)
@@ -23,20 +23,20 @@ measles <- tuesdata$measles
 ``` 
 
 # Load Data
-```{r load-data, message = F}
+```{r load-data, message = FALSE, echo = FALSE}
 measles <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-02-25/measles.csv')
 ```
 
 # Introduction and Data, including Research Questions
 
-We are choosing to study a data set about Measles Vaccination rates in schools across the country. That data set pulls from about 46,412 schools across 32 states in the years of 2017-2019. The data comes from a Wall Street Journal article published in October 2019 called “What’s the Measles Vaccination Rate at Your Child’s School?” which discusses the increasing rates of unvaccinated people that caused a high number of measles cases in the beginning of 2019. The Wall Street Journal compiled the data by reaching out to state health departments for kindergarten rates for individual schools across the country. Thus, our overarching research question is: How does measles vaccination rates vary across the country and demographics in schools? To do this we will look at the reasons why students are exempted from being vaccinated such as religious, medical or personal reasons and examine if there are any trends between the reason and geographic location. Additionally we will examine trends between the type of school, public, private, or charter, and schools overall vaccination rate. For our analysis we will mostly be using the variables state, type of school, vaccination rate, percentage of students with religious exemptions, percentage with personal exemptions, and percentage with medical exemptions. Since this data is a pre-COVID demonstration of vaccination rates, we can use it to help us tackle the current problem of COVID-19 vaccination. We can look at the vaccination trends of measles to target the geographic areas and types of schools which are less likely to be vaccinated. Furthermore, the rates of different measles vaccine exemptions can shed light on the reasoning behind lagging Covid-19 vaccination rates. We hypothesize that there will be a lower vaccination rate in private and religious schools rather than other types of schools. We also hypothesize that geographically, there will be a higher vaccination rate in states that have historically more progressive or liberal political standings, as well as less of a connection to religion. 
+We are choosing to study a data set about Measles Vaccination rates in schools across the country. That data set pulls from about 46,412 schools across 32 states in the years of 2017-2019. The data comes from a Wall Street Journal article published in October 2019 called “What’s the Measles Vaccination Rate at Your Child’s School?” which discusses the increasing rates of unvaccinated people that caused a high number of measles cases in the beginning of 2019. The Wall Street Journal compiled the data by reaching out to state health departments for kindergarten rates for individual schools across the country. Thus, our overarching research question is: How does measles vaccination rates vary across the country and demographics in schools? 
+  
+  To answer this question we will look at the reasons why students are exempted from being vaccinated such as religious, medical or personal reasons and examine if there are any trends between the reason and geographic location. Additionally we will examine trends between the type of school, public, private, or charter, and schools overall vaccination rate. For our analysis we will mostly be using the variables state, type of school, vaccination rate, percentage of students with religious exemptions, percentage with personal exemptions, and percentage with medical exemptions. Since this data is a pre-COVID demonstration of vaccination rates, we can use it to help us tackle the current problem of COVID-19 vaccination. We can look at the vaccination trends of measles to target the geographic areas and types of schools which are less likely to be vaccinated. Furthermore, the rates of different measles vaccine exemptions can shed light on the reasoning behind lagging Covid-19 vaccination rates. We hypothesize that there will be a lower vaccination rate in private and religious schools rather than other types of schools. We also hypothesize that geographically, there will be a higher vaccination rate in states that have historically leaned more progressive or liberal politically.
 
 
 # Glimpse
 
-(Please use `glimpse` for your data, uploaded into the data folder, here.)
-
-```{r glimpse}
+```{r glimpse, echo = FALSE}
 measles %>%
   glimpse()
 ```
@@ -44,16 +44,49 @@ measles %>%
 
 # Data Analysis Plan
 
-Overall, our data analysis will seek to answer how vaccination rates and exemptions vary across states and the type of school. To accomplish this, we will examine the relationship between several variable pairs: overall vaccination status vs. state, overall vaccination status vs. type of school, each type of exemption (personal, religious, and medical) vs. state, and each type of exemption vs. type of school. To analyze vaccination and exemption rates by states, we will use spatial data to show the change in these rates across the country. Then, we can use t-tests to test for significance of vaccination and exemption rates between different types of schools. We will rely on these methods in the place of linear regression since all of the explanatory variables are categorical. If there are significantly lower vaccination rates in private schools vs. other types of schools, this will support our hypothesis.
+Overall, our data analysis will seek to answer how vaccination rates and exemptions vary across states and the type of school. To accomplish this, we will examine the relationship between several variable pairs: overall vaccination status vs. state, overall vaccination status vs. type of school, each type of exemption (personal, religious, and medical) vs. state, and each type of exemption vs. type of school. To analyze vaccination and exemption rates by states, we will use spatial data to show the change in these rates across the country. Then, we can use two-sample t-tests to test for significance of vaccination and exemption rates between different types of schools. If there are significantly lower vaccination rates in private schools vs. other types of schools, this will support our main hypothesis.
 
+```{r sumstats}
 
-```{r bar}
-measles%>%
+```
+
+  A preliminary look at the data shows us that private and charter schools tend to have lower rates of vaccination against measles than other types of schools. Our t-tests will inform us whether this difference is statistically significant. In terms of exemptions, religious exemptions tend to be higher at private schools and schools that don't fall under a category. Personal exemptions tend be higher at charter and kindergarten schools. Medical exempetions are most common at private and public schools. We can conduct further two-sample t-tests to test whether these differences are significant as well. 
+
+```{r bar, echo = FALSE}
+measles %>%
   group_by(type) %>%
   mutate(averagevax = mean(mmr)) %>%
   select(type, averagevax) %>%
-  distinct()%>%
+  distinct() %>%
   ggplot(aes(x = type, y = averagevax)) +
-  geom_col()
+  geom_col() +
+  labs(title = "Measles Vaccination Rates Across Different School Types", x = "School Type", y = "Pecentage of Students Vaccinated")
+measles %>%
+  mutate(xrel = ifelse(is.na(xrel), 0, xrel)) %>%
+  group_by(type) %>%
+  mutate(averagerel = mean(xrel)) %>%
+  select(type, averagerel) %>%
+  distinct() %>%
+  ggplot(aes(x = type, y = averagerel)) +
+  geom_col() +
+  labs(title = "Religious Exemption Rates Across Different School Types", x = "School Type", y = "Pecentage of Students with Religious Exemption")
+measles %>%
+  mutate(xper = ifelse(is.na(xper), 0, xper)) %>%
+  group_by(type) %>%
+  mutate(averageper = mean(xper)) %>%
+  select(type, averageper) %>%
+  distinct() %>%
+  ggplot(aes(x = type, y = averageper)) +
+  geom_col() +
+  labs(title = "Personal Exemption Rates Across Different School Types", x = "School Type", y = "Pecentage of Students with Personal Exemption")
+measles %>%
+  mutate(xmed = ifelse(is.na(xmed), 0, xmed)) %>%
+  group_by(type) %>%
+  mutate(averagemed = mean(xmed)) %>%
+  select(type, averagemed) %>%
+  distinct() %>%
+  ggplot(aes(x = type, y = averagemed)) +
+  geom_col() +
+  labs(title = "Medical Exemption Rates Across Different School Types", x = "School Type", y = "Pecentage of Students with Medical Exemption")
 ```
 
