@@ -1,10 +1,6 @@
 # data
 
-Place data file(s) in this folder.
-
-Then, include metadata about your dataset including information on provenance, codebook, etc.
-
-The codebook for your data file(s) using the following format.
+Dataset of measles vaccination rates in schools. From rfordatascience / tidytuesday /data / 2020 / 2020-02-25. Consists of 16 variables with 66,113 observations.
 
 ## measles.csv
 
