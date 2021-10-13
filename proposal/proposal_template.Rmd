@@ -13,6 +13,10 @@ library(tidyverse)
 library(sf)
 library(viridis)
 library(ggspatial)
+install.packages("tidycensus")
+library(tidycensus)
+
+census_api_key("abc8289fa2ba274ced76d97c7f8ee31666a2c931")
 devtools::install_github("thebioengineer/tidytuesdayR")
 
 tuesdata <- tidytuesdayR::tt_load('2020-02-25')
