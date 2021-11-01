@@ -15,7 +15,7 @@ library(tidycensus)
 
 measles <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-02-25/measles.csv')
 ```
-```
+
 
 #Load Data
 ```{r key}
@@ -56,7 +56,6 @@ measles %>%
   group_by(type) %>%
   mutate(averagerel = mean(xrel)) %>%
   select(type, averagerel) %>%
-  filter(!is.na(xrel)) %>%
   distinct() %>%
   ggplot(aes(x = type, y = averagerel)) +
   geom_col() +
