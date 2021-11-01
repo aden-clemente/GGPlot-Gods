@@ -10,7 +10,7 @@ library(tidyverse)
 library(sf)
 library(viridis)
 library(ggspatial)
-install.packages("tidycensus")
+# install.packages("tidycensus")
 library(tidycensus)
 
 census_api_key("abc8289fa2ba274ced76d97c7f8ee31666a2c931")
@@ -49,3 +49,43 @@ exemption vs. type of school.
 To analyze vaccination and exemption rates by states, we will use spatial data to show the change in these rates across the country.
 Then, we can use two-sample t-tests to test for significance of vaccination and exemption rates between different types of schools.
 If there are significantly lower vaccination rates in private schools vs. other types of schools, this will support our main hypothesis.
+
+#Preliminary Bar Graphs
+```{r bar, echo = FALSE}
+measles %>%
+  group_by(type) %>%
+  mutate(averagevax = mean(mmr)) %>%
+  select(type, averagevax) %>%
+  distinct() %>%
+  ggplot(aes(x = type, y = averagevax)) +
+  geom_col() +
+  labs(title = "Measles Vaccination Rates Across Different School Types", x = "School Type", y = "Pecentage of Students Vaccinated")
+measles %>%
+  mutate(xrel = ifelse(is.na(xrel), 0, xrel)) %>%
+  group_by(type) %>%
+  mutate(averagerel = mean(xrel)) %>%
+  select(type, averagerel) %>%
+  filter(!is.na(xrel)) %>%
+  distinct() %>%
+  ggplot(aes(x = type, y = averagerel)) +
+  geom_col() +
+  labs(title = "Religious Exemption Rates Across Different School Types", x = "School Type", y = "Pecentage of Students with Religious Exemption")
+measles %>%
+  mutate(xper = ifelse(is.na(xper), 0, xper)) %>%
+  group_by(type) %>%
+  mutate(averageper = mean(xper)) %>%
+  select(type, averageper) %>%
+  distinct() %>%
+  ggplot(aes(x = type, y = averageper)) +
+  geom_col() +
+  labs(title = "Personal Exemption Rates Across Different School Types", x = "School Type", y = "Pecentage of Students with Personal Exemption")
+measles %>%
+  mutate(xmed = ifelse(is.na(xmed), 0, xmed)) %>%
+  group_by(type) %>%
+  mutate(averagemed = mean(xmed)) %>%
+  select(type, averagemed) %>%
+  distinct() %>%
+  ggplot(aes(x = type, y = averagemed)) +
+  geom_col() +
+  labs(title = "Medical Exemption Rates Across Different School Types", x = "School Type", y = "Pecentage of Students with Medical Exemption")
+```
