@@ -13,14 +13,8 @@ library(ggspatial)
 # install.packages("tidycensus")
 library(tidycensus)
 
-census_api_key("abc8289fa2ba274ced76d97c7f8ee31666a2c931")
-devtools::install_github("thebioengineer/tidytuesdayR")
-
-tuesdata <- tidytuesdayR::tt_load('2020-02-25')
-tuesdata <- tidytuesdayR::tt_load(2020, week = 9)
-
-
-measles <- tuesdata$measles
+measles <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-02-25/measles.csv')
+```
 ```
 
 #Load Data

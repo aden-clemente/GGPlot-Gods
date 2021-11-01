@@ -31,6 +31,7 @@ measles <- tuesdata$measles
 measles <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-02-25/measles.csv')
 ```
 
+
 # Introduction and Data, including Research Questions
 
 We are choosing to study a data set about Measles Vaccination rates in schools across the country. That data set pulls from about 46,412 schools across 32 states in the years of 2017-2019. The data comes from a Wall Street Journal article published in October 2019 called “What’s the Measles Vaccination Rate at Your Child’s School?” which discusses the increasing rates of unvaccinated people that caused a high number of measles cases in the beginning of 2019. The Wall Street Journal compiled the data by reaching out to state health departments for kindergarten rates for individual schools across the country. Thus, our overarching research question is: How does measles vaccination rates vary across the country and demographics in schools? 
