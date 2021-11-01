@@ -18,9 +18,6 @@ measles <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/ti
 ```
 
 #Load Data
-```{r load-data, message = FALSE, echo = FALSE}
-measles <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-02-25/measles.csv')
-```
 ```{r key}
 census_api_key("abc8289fa2ba274ced76d97c7f8ee31666a2c931", overwrite = TRUE, install = TRUE)
 
