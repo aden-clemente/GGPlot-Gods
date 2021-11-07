@@ -10,6 +10,8 @@ library(tidyverse)
 library(sf)
 library(viridis)
 library(ggspatial)
+#install.packages("usmap")
+library(usmap)
 # install.packages("tidycensus")
 library(tidycensus)
 
@@ -89,6 +91,13 @@ measles %>%
 ```
 
 # vaccination by state graph
+
+```{r countstates}
+measles %>%
+  count(state) %>%
+  group_by(state)
+```
+
 ```{r vaxbystate}
 measles %>%
   filter(overall != (-1)) %>%
@@ -98,3 +107,7 @@ measles %>%
   geom_point() +
   labs(x = "Vaccination Rate", y = "State", title = "Vaccination Rate by State")
 ```
+
+
+
+
