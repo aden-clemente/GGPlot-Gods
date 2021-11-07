@@ -80,8 +80,15 @@ measles %>%
   labs(title = "Medical Exemption Rates Across Different School Types", x = "School Type", y = "Pecentage of Students with Medical Exemption")
 ```
 
+```{r stateaverages}
+stateaverages <- measles %>%
+  transmute()
+```
+
+
 ```{r vaxbystate}
 measles %>%
+  group_by(state) %>%
   ggplot(aes(x = overall, y = state)) +
   geom_point() +
   labs(x = "Vaccination Rate", y = "State", title = "Vaccination Rate by State")
