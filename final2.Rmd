@@ -49,8 +49,20 @@ measles <- measles %>%
   filter(overall != (-1)) %>%
   mutate(numvaxx = round(enroll*overall*.01)) %>%
   mutate(unvaxx = enroll - numvaxx)%>%
+  
+  mutate(numxmed = round(enroll*.01*xmed)) %>%
+  mutate(numxmed = ifelse(is.na(numxmed), 0, numxmed)) %>%
+  
+  mutate(numxrel = round(enroll*.01*xrel)) %>%
+  mutate(numxrel = ifelse(is.na(numxrel), 0, numxrel)) %>%
+  
+  mutate(numxper = round(enroll*.01*xper)) %>%
+  mutate(numxper = ifelse(is.na(numxper), 0, numxper)) %>%
+
   mutate(statefac = as.factor(state))
 ```
+
+
 ```{r logistic reg}
 measlereg <- glm(cbind(numvaxx, unvaxx) ~ statefac + type, data=measles, family = binomial)
 measlereg
