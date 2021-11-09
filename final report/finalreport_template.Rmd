@@ -47,8 +47,19 @@ If there are significantly lower vaccination rates in private schools vs. other 
 ```{r variables}
 measles <- measles %>%
   filter(overall != (-1)) %>%
-  mutate(numvaxx = round(enroll*overall)) %>%
-  mutate(unvaxx = enroll - numvaxx)
+  mutate(numvaxx = round(enroll*.01*overall)) %>%
+  
+  mutate(unvaxx = enroll - numvaxx) %>%
+  mutate(unvaxx = ifelse(is.na(unvaxx), 0, unvaxx)) %>%
+  
+  mutate(numxmed = round(enroll*.01*xmed)) %>%
+  mutate(numxmed = ifelse(is.na(numxmed), 0, numxmed)) %>%
+  
+  mutate(numxrel = round(enroll*.01*xrel)) %>%
+  mutate(numxrel = ifelse(is.na(numxrel), 0, numxrel)) %>%
+  
+  mutate(numxper = round(enroll*.01*xper)) %>%
+  mutate(numxper = ifelse(is.na(numxper), 0, numxper))
 ```
 
 #Preliminary Bar Graphs
@@ -107,7 +118,12 @@ measles %>%
   geom_point() +
   labs(x = "Vaccination Rate", y = "State", title = "Vaccination Rate by State")
 ```
-
-
+```{r vax-exempt-breakdown}
+# measles %>%
+#   group_by(type) %>%
+#   distinct() %>%
+#   ggplot(aes(x = type, fill = )) +
+#   geom_col() +
+#   labs(title = "Proportion of Exemptions Across Different School Types", x = "School Type", fill = "Exemption")
 
 
