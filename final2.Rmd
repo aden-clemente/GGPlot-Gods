@@ -58,18 +58,21 @@ measles <- measles %>%
   
   mutate(numxper = round(enroll*.01*xper)) %>%
   mutate(numxper = ifelse(is.na(numxper), 0, numxper)) %>%
+  
+  mutate(numxother = unvaxx - numxper - numxmed - numxrel) %>%
+  mutate(numxother = ifelse(is.na(numxother), 0, numxother)) %>%
 
   mutate(statefac = as.factor(state))
 ```
 
-
+# Logistic Regression
 ```{r logistic reg}
 measlereg <- glm(cbind(numvaxx, unvaxx) ~ statefac + type, data=measles, family = binomial)
 measlereg
 summary(measlereg)
 ```
  
-#Preliminary Bar Graphs
+# Preliminary Bar Graphs
 ```{r bar, echo = FALSE}
 measles %>%
   group_by(type) %>%
@@ -136,4 +139,10 @@ plot_usmap(data=plotdata, values = "statemean") +
   theme(panel.background = element_rect(color = "black", fill = "lightblue"))
 ```
  
+```{r exemption graph}
+# measles %>%
+#   pivot_longer(cols = numxmed:numxother, names_to = "group", values_to = "count") %>%
+#   ggplot(aes(x = type, y = count, (fill = group))) +
+#            geom_bar(position = "stack")
+```
  
