@@ -31,6 +31,12 @@ readRenviron("~/.Renviron")
 Sys.getenv("CENSUS_API_KEY")
 }
 ```
+```{r censusdata}
+#v18 <- load_variables(2018, "acs5", cache = TRUE)
+
+#View(v18)
+```
+
 #Research Question:
  
 How do measles vaccination rates vary across the country and demographics in schools?
@@ -44,7 +50,7 @@ Then, we can use two-sample t-tests to test for significance of vaccination and 
 If there are significantly lower vaccination rates in private schools vs. other types of schools, this will support our main hypothesis.
  
 #Variable Manipulation
-```{r variables}
+```{r variables, echo = FALSE}
 measles <- measles %>%
   filter(overall != (-1)) %>%
   mutate(numvaxx = round(enroll*overall*.01)) %>%
@@ -64,19 +70,187 @@ measles <- measles %>%
 
   mutate(statefac = as.factor(state))
 ```
+```{r nacheck, echo = FALSE}
+measles2 <- measles %>%
+filter(!is.na(overall), !is.na(type), !is.na(state))
+```
+```{r nacheck2, echo = FALSE}
+measles2 %>%
+  filter(state == "California") %>%
+  group_by(type) %>%
+  mutate(averagevax = mean(overall)) %>%
+  select(type, averagevax) %>%
+  distinct() %>%
+  ggplot(aes(x = type, y = averagevax)) +
+  geom_col() +
+  labs(title = "Vaccination Rates Across Different School Types", x = "School Type", y = "Pecentage of Students Vaccinated")
 
-# Logistic Regression
-```{r logistic reg}
-measlereg <- glm(cbind(numvaxx, unvaxx) ~ statefac, data=measles, family = binomial)
-measlereg
-summary(measlereg)
+measles2 %>%
+  filter(state == "Colorado") %>%
+  group_by(type) %>%
+  mutate(averagevax = mean(overall)) %>%
+  select(type, averagevax) %>%
+  distinct() %>%
+  ggplot(aes(x = type, y = averagevax)) +
+  geom_col() +
+  labs(title = "Vaccination Rates Across Different School Types", x = "School Type", y = "Pecentage of Students Vaccinated")
+
+measles2 %>%
+  filter(state == "Florida") %>%
+  group_by(type) %>%
+  mutate(averagevax = mean(overall)) %>%
+  select(type, averagevax) %>%
+  distinct() %>%
+  ggplot(aes(x = type, y = averagevax)) +
+  geom_col() +
+  labs(title = "Vaccination Rates Across Different School Types", x = "School Type", y = "Pecentage of Students Vaccinated")
+
+measles2 %>%
+  filter(state == "Idaho") %>%
+  group_by(type) %>%
+  mutate(averagevax = mean(overall)) %>%
+  select(type, averagevax) %>%
+  distinct() %>%
+  ggplot(aes(x = type, y = averagevax)) +
+  geom_col() +
+  labs(title = "Vaccination Rates Across Different School Types", x = "School Type", y = "Pecentage of Students Vaccinated")
+
+measles2 %>%
+  filter(state == "Iowa") %>%
+  group_by(type) %>%
+  mutate(averagevax = mean(overall)) %>%
+  select(type, averagevax) %>%
+  distinct() %>%
+  ggplot(aes(x = type, y = averagevax)) +
+  geom_col() +
+  labs(title = "Vaccination Rates Across Different School Types", x = "School Type", y = "Pecentage of Students Vaccinated")
+
+measles2 %>%
+  filter(state == "Michigan") %>%
+  group_by(type) %>%
+  mutate(averagevax = mean(overall)) %>%
+  select(type, averagevax) %>%
+  distinct() %>%
+  ggplot(aes(x = type, y = averagevax)) +
+  geom_col() +
+  labs(title = "Vaccination Rates Across Different School Types", x = "School Type", y = "Pecentage of Students Vaccinated")
+
+measles2 %>%
+  filter(state == "New Jersey") %>%
+  group_by(type) %>%
+  mutate(averagevax = mean(overall)) %>%
+  select(type, averagevax) %>%
+  distinct() %>%
+  ggplot(aes(x = type, y = averagevax)) +
+  geom_col() +
+  labs(title = "Vaccination Rates Across Different School Types", x = "School Type", y = "Pecentage of Students Vaccinated")
+
+measles2 %>%
+  filter(state == "North Carolina") %>%
+  group_by(type) %>%
+  mutate(averagevax = mean(overall)) %>%
+  select(type, averagevax) %>%
+  distinct() %>%
+  ggplot(aes(x = type, y = averagevax)) +
+  geom_col() +
+  labs(title = "Vaccination Rates Across Different School Types", x = "School Type", y = "Pecentage of Students Vaccinated")
+
+measles2 %>%
+  filter(state == "Ohio") %>%
+  group_by(type) %>%
+  mutate(averagevax = mean(overall)) %>%
+  select(type, averagevax) %>%
+  distinct() %>%
+  ggplot(aes(x = type, y = averagevax)) +
+  geom_col() +
+  labs(title = "Vaccination Rates Across Different School Types", x = "School Type", y = "Pecentage of Students Vaccinated")
+
+measles2 %>%
+  filter(state == "Oklahoma") %>%
+  group_by(type) %>%
+  mutate(averagevax = mean(overall)) %>%
+  select(type, averagevax) %>%
+  distinct() %>%
+  ggplot(aes(x = type, y = averagevax)) +
+  geom_col() +
+  labs(title = "Vaccination Rates Across Different School Types", x = "School Type", y = "Pecentage of Students Vaccinated")
+
+measles2 %>%
+  filter(state == "Oregon") %>%
+  group_by(type) %>%
+  mutate(averagevax = mean(overall)) %>%
+  select(type, averagevax) %>%
+  distinct() %>%
+  ggplot(aes(x = type, y = averagevax)) +
+  geom_col() +
+  labs(title = "Vaccination Rates Across Different School Types", x = "School Type", y = "Pecentage of Students Vaccinated")
+
+measles2 %>%
+  filter(state == "Rhode Island") %>%
+  group_by(type) %>%
+  mutate(averagevax = mean(overall)) %>%
+  select(type, averagevax) %>%
+  distinct() %>%
+  ggplot(aes(x = type, y = averagevax)) +
+  geom_col() +
+  labs(title = "Vaccination Rates Across Different School Types", x = "School Type", y = "Pecentage of Students Vaccinated")
+
+measles2 %>%
+  filter(state == "Tennessee") %>%
+  group_by(type) %>%
+  mutate(averagevax = mean(overall)) %>%
+  select(type, averagevax) %>%
+  distinct() %>%
+  ggplot(aes(x = type, y = averagevax)) +
+  geom_col() +
+  labs(title = "Vaccination Rates Across Different School Types", x = "School Type", y = "Pecentage of Students Vaccinated")
+
+measles2 %>%
+  filter(state == "Vermont") %>%
+  group_by(type) %>%
+  mutate(averagevax = mean(overall)) %>%
+  select(type, averagevax) %>%
+  distinct() %>%
+  ggplot(aes(x = type, y = averagevax)) +
+  geom_col() +
+  labs(title = "Vaccination Rates Across Different School Types", x = "School Type", y = "Pecentage of Students Vaccinated")
+
+measles2 %>%
+  filter(state == "Virginia") %>%
+  group_by(type) %>%
+  mutate(averagevax = mean(overall)) %>%
+  select(type, averagevax) %>%
+  distinct() %>%
+  ggplot(aes(x = type, y = averagevax)) +
+  geom_col() +
+  labs(title = "Vaccination Rates Across Different School Types", x = "School Type", y = "Pecentage of Students Vaccinated")
+
+measles2 %>%
+  filter(state == "Washington") %>%
+  group_by(type) %>%
+  mutate(averagevax = mean(overall)) %>%
+  select(type, averagevax) %>%
+  distinct() %>%
+  ggplot(aes(x = type, y = averagevax)) +
+  geom_col() +
+  labs(title = "Vaccination Rates Across Different School Types", x = "School Type", y = "Pecentage of Students Vaccinated")
+
+measles2 %>%
+  filter(state == "Wisconsin") %>%
+  group_by(type) %>%
+  mutate(averagevax = mean(overall)) %>%
+  select(type, averagevax) %>%
+  distinct() %>%
+  ggplot(aes(x = type, y = averagevax)) +
+  geom_col() +
+  labs(title = "Vaccination Rates Across Different School Types", x = "School Type", y = "Pecentage of Students Vaccinated")
 ```
  
 # Preliminary Bar Graphs
 ```{r bar, echo = FALSE}
 measles %>%
   group_by(type) %>%
-  mutate(averagevax = mean(mmr)) %>%
+  mutate(averagevax = mean(overall)) %>%
   select(type, averagevax) %>%
   distinct() %>%
   ggplot(aes(x = type, y = averagevax)) +
@@ -124,7 +298,7 @@ measles %>%
   filter(overall != (-1)) %>%
   group_by(state) %>%
   summarise(statemean = mean(overall)) %>%
-  ggplot(aes(x = statemean, y = state)) +
+  ggplot(aes(x = statemean, y = reorder(state, statemean))) +
   geom_point() +
   labs(x = "Vaccination Rate", y = "State", title = "Vaccination Rate by State")
 ```
@@ -145,4 +319,10 @@ plot_usmap(data=plotdata, values = "statemean") +
 #   ggplot(aes(x = type, y = count, (fill = group))) +
 #            geom_bar(position = "stack")
 ```
- 
+
+ # Logistic Regression
+```{r logistic reg}
+measlereg <- glm(cbind(numvaxx, unvaxx) ~ statefac, data=measles, family = binomial)
+measlereg
+summary(measlereg)
+```
