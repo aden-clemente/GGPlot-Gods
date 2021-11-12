@@ -313,12 +313,43 @@ plot_usmap(data=plotdata, values = "statemean") +
   theme(panel.background = element_rect(color = "black", fill = "lightblue"))
 ```
  
-```{r exemption graph}
-# measles %>%
-#   pivot_longer(cols = numxmed:numxother, names_to = "group", values_to = "count") %>%
-#   ggplot(aes(x = type, y = count, (fill = group))) +
-#            geom_bar(position = "stack")
+
+```{r income}
+income <- get_acs(geography = "state", 
+                       variables = "B07011_001",
+                       year = 2018)
+
+head(income)
 ```
+
+```{r incomegraph}
+income %>%
+  filter(NAME %in% c("California", "Colorado", "Florida", "Idaho", "Iowa", "Michigan", "New Jersey", "North Carolina", "Ohio", "Oklahoma", "Oregon", "Rhode Island", "Tennessee", "Vermont", "Virginia", "Washington", "Wisconsin")) %>%
+  ggplot(aes(x = estimate, y = reorder(NAME, estimate))) +
+  geom_point() +
+  scale_y_discrete() +
+  labs(x = "Median Income", y = "State", title = "Median Income by State")
+```
+```{r race}
+race <- get_acs(geography = "state", 
+                       variables = "B02001_002",
+                       year = 2018)
+
+head(race)
+```
+```{r population}
+population <- get_acs(geography = "state", 
+                       variables = "B01003_001",
+                       year = 2018)
+
+head(population)
+```
+```{r join-pop-race}
+#racerates <- left_join(race, population, by="GEOID") %>%
+#pivot_wider(names_from = "variable", values_from = "estimate")
+```
+
+
 
  # Logistic Regression
 ```{r logistic reg}
