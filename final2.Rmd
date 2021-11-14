@@ -7,6 +7,7 @@ output: pdf_document
 ---
 ```{r load-packages, message = FALSE, warning = FALSE, echo = FALSE}
 library(tidyverse)
+library(tidymodels)
 library(sf)
 library(viridis)
 library(ggspatial)
@@ -20,7 +21,7 @@ measles <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/ti
  
  
 #Load Data
-```{r key}
+```{r key, echo = FALSE}
 census_api_key("abc8289fa2ba274ced76d97c7f8ee31666a2c931", overwrite = TRUE, install = TRUE)
  
 if (FALSE) {
@@ -68,7 +69,10 @@ measles <- measles %>%
   mutate(numxother = unvaxx - numxper - numxmed - numxrel) %>%
   mutate(numxother = ifelse(is.na(numxother), 0, numxother)) %>%
 
-  mutate(statefac = as.factor(state))
+  mutate(statefac = as.factor(state)) %>%
+
+  group_by(state) %>%
+  mutate(statemean = mean(overall))
 ```
 ```{r nacheck, echo = FALSE}
 measles2 <- measles %>%
@@ -284,24 +288,27 @@ measles %>%
   geom_col() +
   labs(title = "Medical Exemption Rates Across Different School Types", x = "School Type", y = "Pecentage of Students with Medical Exemption")
 ```
+
  
-# vaccination by state graph
- 
-```{r countstates}
+```{r countstates, echo = FALSE}
 measles %>%
   count(state) %>%
   group_by(state)
 ```
+```{r counttypes, echo = FALSE}
+measles %>%
+  count(type) %>%
+  group_by(type)
+```
+
  
 ```{r vaxbystate}
 measles %>%
-  filter(overall != (-1)) %>%
-  group_by(state) %>%
-  summarise(statemean = mean(overall)) %>%
   ggplot(aes(x = statemean, y = reorder(state, statemean))) +
   geom_point() +
   labs(x = "Vaccination Rate", y = "State", title = "Vaccination Rate by State")
 ```
+
  
 ```{r vaxbystatemap}
 plotdata <- measles %>%
@@ -314,7 +321,7 @@ plot_usmap(data=plotdata, values = "statemean") +
 ```
  
 
-```{r income}
+```{r income, echo = FALSE}
 income <- get_acs(geography = "state", 
                        variables = "B07011_001",
                        year = 2018)
@@ -330,14 +337,14 @@ income %>%
   scale_y_discrete() +
   labs(x = "Median Income", y = "State", title = "Median Income by State")
 ```
-```{r race}
+```{r race, echo = FALSE}
 race <- get_acs(geography = "state", 
                        variables = "B02001_002",
                        year = 2018)
 
 head(race)
 ```
-```{r population}
+```{r population, echo = FALSE}
 population <- get_acs(geography = "state", 
                        variables = "B01003_001",
                        year = 2018)
@@ -349,6 +356,24 @@ head(population)
 #pivot_wider(names_from = "variable", values_from = "estimate")
 ```
 
+```{r join-income-statemean}
+#incomerates <- left_join(income, measles, by = "statemean")
+```
+
+
+```{r vaxbystateanova}
+ #summary(aov(state~statemean, data = measles))
+```
+
+```{r vaxbytypefilter}
+measles3 <- measles %>%
+ filter(type == c("Public", "Private")) %>%
+ filter(overall != (-1))
+```
+
+```{r vaxbytypettest}
+t.test(measles3$overall~measles3$type)
+```
 
 
  # Logistic Regression
@@ -357,3 +382,11 @@ measlereg <- glm(cbind(numvaxx, unvaxx) ~ statefac, data=measles, family = binom
 measlereg
 summary(measlereg)
 ```
+
+```{r linregvaxbyincome}
+#linear_reg() %>%
+ #set_engine("lm") %>%
+# fit(statemean ~ estimate, data = measleincome) %>%
+ #tidy()
+```
+
