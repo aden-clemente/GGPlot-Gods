@@ -40,6 +40,35 @@ Sys.getenv("CENSUS_API_KEY")
 #View(v18)
 ```
 
+
+
+```{r get-income-data, echo = FALSE}
+income <- get_acs(geography = "state", 
+                       variables = "B07011_001",
+                       year = 2018)
+
+head(income)
+```
+
+
+```{r get-race-data, echo = FALSE}
+race <- get_acs(geography = "state", 
+                       variables = "B02001_002",
+                       year = 2018)
+
+head(race)
+```
+
+
+```{r get-population-data, echo = FALSE}
+population <- get_acs(geography = "state", 
+                       variables = "B01003_001",
+                       year = 2018)
+
+head(population)
+```
+
+
 #Research Question
  
 How do measles vaccination rates vary across the country and demographics in schools?
@@ -60,6 +89,7 @@ measles <- measles %>%
                     ifelse(overall == -1 && mmr == -1, -1,
                     overall)))) %>%
   filter(realrate != -1) %>%
+  filter(!state %in% c("California", "Colorado", "Ohio")) %>%
   
   mutate(numvaxx = round(enroll*realrate*.01)) %>%
   mutate(unvaxx = enroll - numvaxx)%>%
@@ -89,7 +119,7 @@ filter(!is.na(realrate), !is.na(type), !is.na(state))
 ```
 
 
-```{r nacheck2, echo = FALSE}
+```{r nacheck2, echo = FALSE, message = FALSE, include = FALSE}
 measles2 %>%
   filter(state == "California") %>%
   group_by(type) %>%
@@ -261,24 +291,26 @@ measles2 %>%
   labs(title = "Vaccination Rates Across Different School Types", x = "School Type", y = "Pecentage of Students Vaccinated")
 ```
  
-# Exploratory Data Analysis
 
-```{r count-mmr, echo = FALSE}
+```{r join-pop-race}
+#racerates <- left_join(race, population, by="GEOID") %>%
+#pivot_wider(names_from = "variable", values_from = "estimate")
+```
+
+```{r join-income-statemean}
+#incomerates <- left_join(income, measles, by = "statemean")
+```
+ 
+# Exploratory Data Analysis
+```{r count-type, echo = FALSE}
 measles %>%
-  count(mmr) %>%
-  group_by(mmr)
+  group_by(type) %>%
+  count(type)
 ```
 
 ```{r count-states, echo = FALSE}
 measles %>%
-  count(state) %>%
-  group_by(state)
-```
-
-```{r count-types, echo = FALSE}
-measles %>%
-  count(type) %>%
-  group_by(type)
+  count(state)
 ```
 
 
@@ -340,15 +372,6 @@ plot_usmap(data=plotdata, values = "statemean") +
 ```
  
 
-```{r get-income-data, echo = FALSE}
-income <- get_acs(geography = "state", 
-                       variables = "B07011_001",
-                       year = 2018)
-
-head(income)
-```
-
-
 ```{r income-graph, echo = FALSE}
 income %>%
   filter(NAME %in% c("California", "Colorado", "Florida", "Idaho", "Iowa", "Michigan", "New Jersey", "North Carolina", "Ohio", "Oklahoma", "Oregon", "Rhode Island", "Tennessee", "Vermont", "Virginia", "Washington", "Wisconsin")) %>%
@@ -358,47 +381,30 @@ income %>%
   labs(x = "Median Income", y = "State", title = "Median Income by State")
 ```
 
-
-```{r get-race-data, echo = FALSE}
-race <- get_acs(geography = "state", 
-                       variables = "B02001_002",
-                       year = 2018)
-
-head(race)
+# T-Tests and ANOVA
+```{r vaxbystateanova, echo=FALSE}
+summary(aov(realrate~state,data=measles))
 ```
 
-
-```{r get-population-data, echo = FALSE}
-population <- get_acs(geography = "state", 
-                       variables = "B01003_001",
-                       year = 2018)
-
-head(population)
-```
-
-
-```{r join-pop-race}
-#racerates <- left_join(race, population, by="GEOID") %>%
-#pivot_wider(names_from = "variable", values_from = "estimate")
-```
-
-```{r join-income-statemean}
-#incomerates <- left_join(income, measles, by = "statemean")
-```
-
-
-```{r vaxbystateanova}
- #summary(aov(state~statemean, data = measles))
-```
-
-```{r vaxbytypefilter}
+```{r vaxbytypefilter, echo=FALSE}
 measles3 <- measles %>%
- filter(type %in% c("Public", "Private")) %>%
- filter(realrate != (-1))
+ filter(type %in% c("Public", "Private"))
+
+measles4 <- measles %>%
+  filter(type %in% c("Public", "Charter"))
+
+measles5 <- measles %>%
+  filter(type %in% c("Private", "Charter")) 
+  
 ```
 
-```{r vaxbytypettest}
+```{r vaxbytype-ttest, echo=FALSE}
 t.test(measles3$realrate~measles3$type)
+
+t.test(measles4$realrate~measles4$type)
+
+t.test(measles5$realrate~measles5$type)
+
 ```
 
 
