@@ -19,9 +19,8 @@ library(tidycensus)
 measles <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-02-25/measles.csv')
 ```
  
- 
-#Load Data
-```{r key, echo = FALSE}
+
+```{r key, echo = FALSE, message = FALSE, warning = FALSE}
 census_api_key("abc8289fa2ba274ced76d97c7f8ee31666a2c931", overwrite = TRUE, install = TRUE)
  
 if (FALSE) {
@@ -34,20 +33,11 @@ Sys.getenv("CENSUS_API_KEY")
 ```
 
 
-```{r censusdata}
-#v18 <- load_variables(2018, "acs5", cache = TRUE)
-
-#View(v18)
-```
-
-
 
 ```{r get-income-data, echo = FALSE}
 income <- get_acs(geography = "state", 
                        variables = "B07011_001",
                        year = 2018)
-
-head(income)
 ```
 
 
@@ -55,8 +45,6 @@ head(income)
 race <- get_acs(geography = "state", 
                        variables = "B02001_002",
                        year = 2018)
-
-head(race)
 ```
 
 
@@ -64,8 +52,6 @@ head(race)
 population <- get_acs(geography = "state", 
                        variables = "B01003_001",
                        year = 2018)
-
-head(population)
 ```
 
 
@@ -81,7 +67,7 @@ To analyze vaccination and exemption rates by states, we will use spatial data t
 Then, we can use two-sample t-tests to test for significance of vaccination and exemption rates between different types of schools.
 If there are significantly lower vaccination rates in private schools vs. other types of schools, this will support our main hypothesis.
  
-# Data Wrangling
+
 ```{r variables, echo = FALSE}
 measles <- measles %>%
   mutate(realrate = ifelse(mmr == -1, overall, 
@@ -114,8 +100,8 @@ measles <- measles %>%
 
 
 ```{r nacheck, echo = FALSE}
-measles2 <- measles %>%
-filter(!is.na(realrate), !is.na(type), !is.na(state))
+#measles2 <- measles %>%
+#filter(!is.na(realrate), !is.na(type), !is.na(state))
 ```
 
 
@@ -292,11 +278,6 @@ filter(!is.na(realrate), !is.na(type), !is.na(state))
 ```
  
 
-```{r join-pop-race}
-#racerates <- left_join(race, population, by="GEOID") %>%
-#pivot_wider(names_from = "variable", values_from = "estimate")
-```
-
 ```{r join-income-statemean, echo = FALSE}
 incomerates <- left_join(measles, income, by = c("state" = "NAME"))
 
@@ -305,14 +286,14 @@ incomerates
  
 # Exploratory Data Analysis
 ```{r count-type, echo = FALSE}
-measles %>%
-  group_by(type) %>%
-  count(type)
+#measles %>%
+ # group_by(type) %>%
+ # count(type)
 ```
 
 ```{r count-states, echo = FALSE}
-measles %>%
-  count(state)
+#measles %>%
+ # count(state)
 ```
 
 
