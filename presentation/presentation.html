@@ -1,24 +1,39 @@
 <!DOCTYPE html>
 <html lang="" xml:lang="">
   <head>
-    <title>Presentation title</title>
+    <title>Vaccination Rates in Schools Across the US</title>
     <meta charset="utf-8" />
-    <meta name="author" content="Team name   Names of team members" />
-    <meta name="date" content="2021-10-06" />
-    <script src="libs/header-attrs-2.9/header-attrs.js"></script>
+    <meta name="author" content="GGPlot Gods   Lindsey Weyant, Ali Raich, Aden Clemente" />
+    <meta name="date" content="2021-11-17" />
+    <script src="libs/header-attrs-2.11/header-attrs.js"></script>
     <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
   </head>
   <body>
     <textarea id="source">
 class: center, middle, inverse, title-slide
 
-# Presentation title
-## Presentation subtitle (if any)
-### Team name <br> Names of team members
+# Vaccination Rates in Schools Across the US
+## Data taken from tidytuesday and Wall Street Journal
+### GGPlot Gods <br> Lindsey Weyant, Ali Raich, Aden Clemente
 ### Duke University
-### 2021-10-06
+### 11/17/21
 
 ---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -31,233 +46,282 @@ class: center, middle, inverse, title-slide
 
 class: inverse, middle, center
 
-# Using xaringan
+# Intro
 
 ---
 
-## xaringan
+## Research Question
 
-- The presentation is created using the `xaringan` package
+How do measles vaccination rates vary across the country in different types of school?
 
-- Use `---` to separate slides and `--` for incremental builds
+---
+
+## Where did our data come from?
+
+-tidytuesday measles vaccination rates
+
+-Wall Street Journal article from October 2019
 
 --
 
-- Like this
+-"What's the Measles Vaccination Rate at Your Child's School?"
 
 ---
 
-## Layouts
+## What's important about our data?
 
-You can use plain text
+-WHO recommends a 95% vaccination rate among elementary schools
 
-- or bullet points
-
-.pull-left[
-or text in two columns `\(^*\)`
-]
-.pull-right[
-- like
-- this
-]
-
-.footnote[
-[*] And add footnotes
-]
+-It's important to note that there is not a universal method for collecting and keeping track of immunization rates so each state's data set is slightly different.
 
 ---
 
-## Code
+## Data Wrangling
 
+-Mutation for if school had mmr but not overall:
 
-```r
-# a boring regression
-model &lt;- lm(dist ~ speed, data = cars)
-tidy(model)
-```
+--
 
-```
-## # A tibble: 2 × 5
-##   term        estimate std.error statistic  p.value
-##   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
-## 1 (Intercept)   -17.6      6.76      -2.60 1.23e- 2
-## 2 speed           3.93     0.416      9.46 1.49e-12
-```
+-If school had overall vaccination rate, we used overall, but if there was only mmr, we used the mmr rate.
 
-```r
-glance(model)
-```
+--
 
-```
-## # A tibble: 1 × 12
-##   r.squared adj.r.squared sigma statistic  p.value    df logLik   AIC   BIC
-##       &lt;dbl&gt;         &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-## 1     0.651         0.644  15.4      89.6 1.49e-12     1  -207.  419.  425.
-## # … with 3 more variables: deviance &lt;dbl&gt;, df.residual &lt;int&gt;, nobs &lt;int&gt;
-```
-
----
-
-## Plots
-
-
-
-&lt;img src="presentation_files/figure-html/plot-penguins-1.png" title="Body mass vs. flipper lenght of Palmer Penguins for species Adelie and all the others combined together. There is a relatively strong, positive relationship between the two variables. The Adelie penguins are clustered together but they don't exhibit a different trend than the rest of the penguins." alt="Body mass vs. flipper lenght of Palmer Penguins for species Adelie and all the others combined together. There is a relatively strong, positive relationship between the two variables. The Adelie penguins are clustered together but they don't exhibit a different trend than the rest of the penguins." width="70%" /&gt;
-
----
-
-## Plot and text
-
-.pull-left[
-- Some text
-- goes here
-]
-.pull-right[
-&lt;img src="presentation_files/figure-html/unnamed-chunk-1-1.png" width="100%" /&gt;
-]
+-Majority of our analysis by type of school was conducted between private, public, and charter schools.
 
 ---
 
 class: inverse, middle, center
 
-# A new section...
+#Vaccination Exemption Type Graphs
+
+##Preliminary Analysis
 
 ---
 
-## Tables
+&lt;img src="presentation_files/figure-html/vaxgraph-1.png" width="70%" /&gt;
+---
 
-If you want to generate a table, make sure it is in the HTML format (instead of Markdown or other formats), e.g.,
+&lt;img src="presentation_files/figure-html/religiousexemption-1.png" width="70%" /&gt;
+
+---
+
+&lt;img src="presentation_files/figure-html/personalexemption-1.png" width="70%" /&gt;
+
+---
+
+&lt;img src="presentation_files/figure-html/medicalexemption-1.png" width="70%" /&gt;
+
+---
+
+&lt;img src="presentation_files/figure-html/vaxbystatemap-1.png" width="70%" /&gt;
+
+---
+
+&lt;img src="presentation_files/figure-html/income-graph-1.png" width="70%" /&gt;
+
+---
+
+class: inverse, middle, center
+
+#T Tests and Anova
+
+---
+
+##T Tests
+
+
 
 &lt;table&gt;
+&lt;caption&gt;Output for T-Test between Public and Private Schools&lt;/caption&gt;
  &lt;thead&gt;
   &lt;tr&gt;
-   &lt;th style="text-align:left;"&gt; species &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; island &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; bill_length_mm &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; bill_depth_mm &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; flipper_length_mm &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; body_mass_g &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; sex &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; year &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; estimate &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; estimate1 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; estimate2 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; statistic &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; p.value &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; parameter &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; conf.low &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; conf.high &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; method &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; alternative &lt;/th&gt;
   &lt;/tr&gt;
  &lt;/thead&gt;
 &lt;tbody&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; Adelie &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; Torgersen &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 39.1 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 18.7 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 181 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 3750 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; male &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 2007 &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; Adelie &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; Torgersen &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 39.5 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 17.4 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 186 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 3800 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; female &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 2007 &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; Adelie &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; Torgersen &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 40.3 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 18.0 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 195 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 3250 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; female &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 2007 &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; Adelie &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; Torgersen &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; NA &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 2007 &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; Adelie &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; Torgersen &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 36.7 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 19.3 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 193 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 3450 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; female &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 2007 &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; Adelie &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; Torgersen &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 39.3 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 20.6 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 190 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 3650 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; male &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 2007 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -3.534196 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 93.47576 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 97.00995 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -11.70155 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2610.628 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -4.126435 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -2.941957 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Welch Two Sample t-test &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; two.sided &lt;/td&gt;
   &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
 
+&lt;table&gt;
+&lt;caption&gt;Output for T-Test between Public and Charter Schools&lt;/caption&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;"&gt; estimate &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; estimate1 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; estimate2 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; statistic &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; p.value &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; parameter &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; conf.low &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; conf.high &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; method &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; alternative &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; -9.054747 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 87.95521 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 97.00995 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -11.42272 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 219.4524 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -10.61702 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -7.492476 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Welch Two Sample t-test &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; two.sided &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;table&gt;
+&lt;caption&gt;Output for T-Test between Private and Charter Schools&lt;/caption&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;"&gt; estimate &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; estimate1 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; estimate2 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; statistic &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; p.value &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; parameter &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; conf.low &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; conf.high &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; method &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; alternative &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; -5.520551 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 87.95521 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 93.47576 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -6.553249 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 279.4151 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -7.178836 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -3.862267 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Welch Two Sample t-test &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; two.sided &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
 ---
 
-## Images
+## ANOVA
 
-&lt;div class="figure" style="text-align: center"&gt;
-&lt;img src="img/watercolour_sys02_img32_percolate.jpg" alt="Image credit: Danielle Navarro, Percolate." width="40%" /&gt;
-&lt;p class="caption"&gt;Image credit: Danielle Navarro, Percolate.&lt;/p&gt;
-&lt;/div&gt;
 
-Or you can also include a full page image. See next slide.
+Table: ANOVA
 
----
-
-background-image: url(img/watercolour_sys02_img32_percolate.jpg)
-
----
-
-## Math Expressions
-
-You can write LaTeX math expressions inside a pair of dollar signs, e.g. &amp;#36;\alpha+\beta$ renders `\(\alpha+\beta\)`. You can use the display style with double dollar signs:
-
-```
-$$\bar{X}=\frac{1}{n}\sum_{i=1}^nX_i$$
-```
-
-`$$\bar{X}=\frac{1}{n}\sum_{i=1}^nX_i$$`
-
-Limitations:
-
-1. The source code of a LaTeX math expression must be in one line, unless it is inside a pair of double dollar signs, in which case the starting `$$` must appear in the very beginning of a line, followed immediately by a non-space character, and the ending `$$` must be at the end of a line, led by a non-space character;
-
-1. There should not be spaces after the opening `$` or before the closing `$`.
-
-1. Math does not work on the title slide (see [#61](https://github.com/yihui/xaringan/issues/61) for a workaround).
+|term      |    df|     sumsq|      meansq| statistic| p.value|
+|:---------|-----:|---------:|-----------:|---------:|-------:|
+|state     |    25|  516286.4| 20651.45612|  320.7196|       0|
+|Residuals | 39479| 2542092.1|    64.39099|        NA|      NA|
 
 ---
 
 class: inverse, middle, center
 
-# Wrap up
+# Regression Analysis
 
 ---
 
-## Feeling adventurous?
+##Logistic Regression
 
-- Want to find out more about `xaringan`? See https://slides.yihui.name/xaringan/#1.
 
-- You are welcomed to use the default styling of the slides. In fact, that's what I expect majority of you will do. You will differentiate yourself with the content of your presentation.
+Table: Output for Logistic Regression
 
-- But some of you might want to play around with slide styling. The 
-`xaringanthemer` provides some solutions for this that: https://pkg.garrickadenbuie.com/xaringanthemer.
+|term                   |  estimate| std.error| statistic| p.value|
+|:----------------------|---------:|---------:|---------:|-------:|
+|(Intercept)            |  4.072161| 0.0046249| 303.60851|       0|
+|statefacArizona        |  3.370289| 0.0143644|  84.58427|       0|
+|statefacFlorida        |  3.379824| 0.0093171| 130.70867|       0|
+|statefacIllinois       | 10.359710| 0.0061598| 379.54404|       0|
+|statefacIowa           |  6.067351| 0.0095512| 188.76406|       0|
+|statefacMaine          |  3.693512| 0.0262128|  49.84498|       0|
+|statefacMichigan       |  3.215546| 0.0113500| 102.90705|       0|
+|statefacMinnesota      |  3.361359| 0.0138015|  87.84142|       0|
+|statefacMontana        |  2.599367| 0.0111232|  85.88081|       0|
+|statefacNew Jersey     |  6.592150| 0.0170592| 110.54917|       0|
+|statefacNorth Carolina |  6.903029| 0.0156597| 123.37174|       0|
+|statefacNorth Dakota   |  3.586700| 0.0336633|  37.94139|       0|
+|statefacPennsylvania   |  8.292260| 0.0167164| 126.54160|       0|
+|statefacRhode Island   |  5.622851| 0.0480118|  35.96695|       0|
+|statefacSouth Dakota   |  7.430762| 0.0507160|  39.54630|       0|
+|statefacTennessee      |  4.569600| 0.0161181|  94.26834|       0|
+|statefacUtah           |  5.426775| 0.0101558| 166.54017|       0|
+|statefacVirginia       |  3.454342| 0.0138466|  89.52595|       0|
 
-- And if you want more bells and whistles, there is also `xaringanExtra`: https://pkg.garrickadenbuie.com/xaringanExtra.
+---
+
+##Linear Regression
+
+
+Table: Output for Linear Regression with Respect to Income
+
+|term        |   estimate| std.error| statistic| p.value|
+|:-----------|----------:|---------:|---------:|-------:|
+|(Intercept) | 81.6017595| 0.1836077| 444.43548|       0|
+|estimate    |  0.0004092| 0.0000060|  68.64739|       0|
+
+---
+
+## Linear Regression Graph
+
+
+```
+## `geom_smooth()` using formula 'y ~ x'
+```
+
+&lt;img src="presentation_files/figure-html/linreg-vaxbyincomegraph-1.png" width="70%" /&gt;
+---
+
+## Linear Regression Equation
+
+Equation for predicting state mean vax rate: `\(\hat{y} = 81.60 + 0.0004092 * x_i\)`
+
+---
+
+## Summary
+
+-There is a relationship between overall vaccination rate and type of school
+
+--
+
+-Charter schools had the lowest vaccination rate, public schools had the highest
+
+--
+
+-Vaccination rate and state
+
+-Vaccination rate and median state income
+
+---
+
+class: inverse, middle, center
+
+# Further research
+
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>

@@ -1,9 +1,9 @@
 ---
-title: "Presentation title"
-subtitle: "Presentation subtitle (if any)"
-author: "Team name <br> Names of team members"
+title: "Vaccination Rates in Schools Across the US"
+subtitle: "Data taken from tidytuesday and Wall Street Journal"
+author: "GGPlot Gods <br> Lindsey Weyant, Ali Raich, Aden Clemente"
 institute: "Duke University"
-date: "`r Sys.Date()`"
+date: "11/17/21"
 output:
   xaringan::moon_reader:
     css: xaringan-themer.css
@@ -16,13 +16,16 @@ output:
 ---
 
 ```{r load-packages, include = FALSE}
-# Add any additional packages you need to this chunk
-# Remove any packages from this list that you're not using
 library(tidyverse)
 library(tidymodels)
-library(palmerpenguins)
 library(knitr)
 library(xaringanthemer)
+library(sf)
+library(viridis)
+library(ggspatial)
+library(usmap)
+library(tidycensus)
+measles <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-02-25/measles.csv')
 ```
 
 ```{r setup, include=FALSE}
@@ -37,7 +40,19 @@ knitr::opts_chunk$set(
 ```
 
 ```{r load-data, include=FALSE}
-# Load your data here
+measles <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-02-25/measles.csv')
+```
+
+```{r key, echo = FALSE, message = FALSE, warning = FALSE, include=FALSE}
+census_api_key("abc8289fa2ba274ced76d97c7f8ee31666a2c931", overwrite = TRUE, install = TRUE)
+ 
+if (FALSE) {
+census_api_key("abc8289fa2ba274ced76d97c7f8ee31666a2c931", install = TRUE)
+# First time, reload your environment so you can use the key without restarting R.
+readRenviron("~/.Renviron")
+# You can check it with:
+Sys.getenv("CENSUS_API_KEY")
+}
 ```
 
 ```{r style-slides, echo = FALSE}
@@ -46,156 +61,303 @@ style_xaringan(
 )
 ```
 
+```{r get-income-data, echo = FALSE, message = FALSE, warning = FALSE}
+income <- get_acs(geography = "state", 
+                       variables = "B07011_001",
+                       year = 2018)
+```
+
+
+```{r get-race-data, echo = FALSE, message = FALSE, warning= FALSE}
+race <- get_acs(geography = "state", 
+                       variables = "B02001_002",
+                       year = 2018)
+```
+
+
+```{r get-population-data, echo = FALSE, warning=FALSE, message=FALSE}
+population <- get_acs(geography = "state", 
+                       variables = "B01003_001",
+                       year = 2018)
+```
+
+```{r variables, echo = FALSE}
+measles <- measles %>%
+  mutate(realrate = ifelse(mmr == -1, overall, 
+                    ifelse(overall == -1, mmr, 
+                    ifelse(overall == -1 && mmr == -1, -1,
+                    overall)))) %>%
+  filter(realrate != -1) %>%
+  filter(!state %in% c("California", "Colorado", "Ohio")) %>%
+  
+  mutate(numvaxx = round(enroll*realrate*.01)) %>%
+  mutate(unvaxx = enroll - numvaxx) %>%
+  
+  mutate(numxmed = round(enroll*.01*xmed)) %>%
+  mutate(numxmed = ifelse(is.na(numxmed), 0, numxmed)) %>%
+  
+  mutate(numxrel = round(enroll*.01*xrel)) %>%
+  mutate(numxrel = ifelse(is.na(numxrel), 0, numxrel)) %>%
+  
+  mutate(numxper = round(enroll*.01*xper)) %>%
+  mutate(numxper = ifelse(is.na(numxper), 0, numxper)) %>%
+  
+  mutate(numxother = unvaxx - numxper - numxmed - numxrel) %>%
+  mutate(numxother = ifelse(is.na(numxother), 0, numxother)) %>%
+
+  mutate(statefac = as.factor(state)) %>%
+
+  group_by(state) %>%
+  mutate(statemean = mean(realrate))
+```
+
+```{r join-income-statemean, echo = FALSE}
+incomerates <- left_join(measles, income, by = c("state" = "NAME"))
+```
+
+
 class: inverse, middle, center
 
-# Using xaringan
+# Intro
 
 ---
 
-## xaringan
+## Research Question
 
-- The presentation is created using the `xaringan` package
+How do measles vaccination rates vary across the country in different types of school?
 
-- Use `---` to separate slides and `--` for incremental builds
+---
+
+## Where did our data come from?
+
+-tidytuesday measles vaccination rates
+
+-Wall Street Journal article from October 2019
 
 --
 
-- Like this
+-"What's the Measles Vaccination Rate at Your Child's School?"
 
 ---
 
-## Layouts
+## What's important about our data?
 
-You can use plain text
+-WHO recommends a 95% vaccination rate among elementary schools
 
-- or bullet points
-
-.pull-left[
-or text in two columns $^*$
-]
-.pull-right[
-- like
-- this
-]
-
-.footnote[
-[*] And add footnotes
-]
+-It's important to note that there is not a universal method for collecting and keeping track of immunization rates so each state's data set is slightly different.
 
 ---
 
-## Code
+## Data Wrangling
 
-```{r boring-regression}
-# a boring regression
-model <- lm(dist ~ speed, data = cars)
-tidy(model)
-glance(model)
-```
+-Mutation for if school had mmr but not overall:
 
----
+--
 
-## Plots
+-If school had overall vaccination rate, we used overall, but if there was only mmr, we used the mmr rate.
 
-```{r recode-species, echo = FALSE}
-# In this chunk I'm doing a bunch of analysis that I don't want to present 
-# in my slides. But I need the resulting data frame for a plot I want to present.
-penguins_modified <- penguins %>%
-  mutate(species = fct_other(species, keep = "Adelie"))
-```
+--
 
-```{r plot-penguins, echo = FALSE, warning = FALSE, fig.alt = "Body mass vs. flipper lenght of Palmer Penguins for species Adelie and all the others combined together. There is a relatively strong, positive relationship between the two variables. The Adelie penguins are clustered together but they don't exhibit a different trend than the rest of the penguins."}
-# Code hidden with echo = FALSE
-# Uses modified penguins dataset from previous chunk
-# Play around with height and width until you're happy with the look
-ggplot(penguins_modified, aes(x = flipper_length_mm, y = body_mass_g, color = species)) +
-  geom_point() + 
-  theme_minimal()
-```
-
----
-
-## Plot and text
-
-.pull-left[
-- Some text
-- goes here
-]
-.pull-right[
-```{r warning=FALSE, out.width="100%", fig.width=4, echo=FALSE}
-# see how I changed out.width and fig.width from defaults
-# to make the figure bigger
-ggplot(penguins, aes(x = bill_length_mm, y = species, color = species)) +
-  geom_boxplot() +
-  theme_minimal()
-```
-]
+-Majority of our analysis by type of school was conducted between private, public, and charter schools.
 
 ---
 
 class: inverse, middle, center
 
-# A new section...
+#Vaccination Exemption Type Graphs
+
+##Preliminary Analysis
 
 ---
 
-## Tables
+```{r vaxgraph, echo = FALSE, warning = FALSE}
+measles %>%
+  group_by(type) %>%
+  mutate(averagevax = mean(realrate)) %>%
+  select(type, averagevax) %>%
+  distinct() %>%
+  ggplot(aes(x = type, y = averagevax)) +
+  geom_col() +
+  labs(title = "Measles Vaccination Rates Across Different School Types", x = "School Type", y = "Pecentage of Students Vaccinated")
+```
+---
 
-If you want to generate a table, make sure it is in the HTML format (instead of Markdown or other formats), e.g.,
-
-```{r penguins-table, echo = FALSE}
-kable(head(penguins), format = "html")
+```{r religiousexemption, echo = FALSE, warning = FALSE}
+measles %>%
+  mutate(xrel = ifelse(is.na(xrel), 0, xrel)) %>%
+  group_by(type) %>%
+  mutate(averagerel = mean(xrel)) %>%
+  select(type, averagerel) %>%
+  distinct() %>%
+  ggplot(aes(x = type, y = averagerel)) +
+  geom_col() +
+  labs(title = "Religious Exemption Rates Across Different School Types", 
+       x = "School Type", y = "Pecentage of Students with Religious Exemption")
 ```
 
 ---
 
-## Images
-
-```{r castle, echo = FALSE, out.width = "40%", fig.align = "center", fig.cap = "Image credit: Danielle Navarro, Percolate."}
-include_graphics("img/watercolour_sys02_img32_percolate.jpg")
+```{r personalexemption, echo = FALSE}
+measles %>%
+  mutate(xper = ifelse(is.na(xper), 0, xper)) %>%
+  group_by(type) %>%
+  mutate(averageper = mean(xper)) %>%
+  select(type, averageper) %>%
+  distinct() %>%
+  ggplot(aes(x = type, y = averageper)) +
+  geom_col() +
+  labs(title = "Personal Exemption Rates Across Different School Types", 
+       x = "School Type", y = "Pecentage of Students with Personal Exemption")
 ```
-
-Or you can also include a full page image. See next slide.
 
 ---
 
-background-image: url(img/watercolour_sys02_img32_percolate.jpg)
+```{r medicalexemption, echo = FALSE}
+measles %>%
+  mutate(xmed = ifelse(is.na(xmed), 0, xmed)) %>%
+  group_by(type) %>%
+  mutate(averagemed = mean(xmed)) %>%
+  select(type, averagemed) %>%
+  distinct() %>%
+  ggplot(aes(x = type, y = averagemed)) +
+  geom_col() +
+  labs(title = "Medical Exemption Rates Across Different School Types", 
+       x = "School Type", y = "Pecentage of Students with Medical Exemption")
+```
 
 ---
 
-## Math Expressions
-
-You can write LaTeX math expressions inside a pair of dollar signs, e.g. &#36;\alpha+\beta$ renders $\alpha+\beta$. You can use the display style with double dollar signs:
-
+```{r vaxbystatemap, echo=FALSE}
+plotdata <- measles %>%
+filter(realrate != (-1)) %>%
+group_by(state) %>%
+summarise(statemean = mean(realrate))
+plot_usmap(data=plotdata, values = "statemean") +
+  labs(title = "Vaccination Rate by State", fill = "Vaccination Rate") +
+  theme(panel.background = element_rect(color = "black", fill = "lightblue"))
 ```
-$$\bar{X}=\frac{1}{n}\sum_{i=1}^nX_i$$
+
+---
+
+```{r income-graph, echo = FALSE, fig.width=6, fig.height=4}
+income %>%
+  filter(NAME %in% c("Arizona", "Arkansas", "Connecticut", "Florida", "Idaho", "Illinois", "Iowa", "Maine", "Massachusetts", "Michigan", "Minnesota", "Missouri", "Montana", "New Jersey", "New York", "North Carolina", "North Dakota", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "Wisconsin")) %>%
+  ggplot(aes(x = estimate, y = reorder(NAME, estimate))) +
+  geom_point() +
+  scale_y_discrete() +
+  labs(x = "Median Income", y = "State", title = "Median Income by State")
 ```
-
-$$\bar{X}=\frac{1}{n}\sum_{i=1}^nX_i$$
-
-Limitations:
-
-1. The source code of a LaTeX math expression must be in one line, unless it is inside a pair of double dollar signs, in which case the starting `$$` must appear in the very beginning of a line, followed immediately by a non-space character, and the ending `$$` must be at the end of a line, led by a non-space character;
-
-1. There should not be spaces after the opening `$` or before the closing `$`.
-
-1. Math does not work on the title slide (see [#61](https://github.com/yihui/xaringan/issues/61) for a workaround).
 
 ---
 
 class: inverse, middle, center
 
-# Wrap up
+#T Tests and Anova
 
 ---
 
-## Feeling adventurous?
+##T Tests
 
-- Want to find out more about `xaringan`? See https://slides.yihui.name/xaringan/#1.
+```{r vaxbytypefilter, echo=FALSE}
+measles3 <- measles %>%
+ filter(type %in% c("Public", "Private"))
 
-- You are welcomed to use the default styling of the slides. In fact, that's what I expect the majority of you will do. You will differentiate yourself with the content of your presentation.
+measles4 <- measles %>%
+  filter(type %in% c("Public", "Charter"))
 
-- But some of you might want to play around with slide styling. The 
-`xaringanthemer` provides some solutions for this that: https://pkg.garrickadenbuie.com/xaringanthemer.
+measles5 <- measles %>%
+  filter(type %in% c("Private", "Charter")) 
+  
+```
 
-- And if you want more bells and whistles, there is also `xaringanExtra`: https://pkg.garrickadenbuie.com/xaringanExtra.
+```{r vaxbytype-ttest, echo=FALSE}
+t.test(measles3$realrate~measles3$type) %>%
+  tidy() %>%
+  knitr::kable(caption="Output for T-Test between Public and Private Schools", format="html")
+
+t.test(measles4$realrate~measles4$type) %>%
+  tidy() %>%
+  knitr::kable(caption="Output for T-Test between Public and Charter Schools", format= "html")
+
+t.test(measles5$realrate~measles5$type) %>%
+  tidy() %>%
+  knitr::kable(caption="Output for T-Test between Private and Charter Schools", format = "html")
+
+```
+---
+
+## ANOVA
+
+```{r vaxbystateanova, echo=FALSE}
+tidy(aov(realrate~state,data=measles)) %>%
+  knitr::kable(caption="ANOVA")
+```
+
+---
+
+class: inverse, middle, center
+
+# Regression Analysis
+
+---
+
+##Logistic Regression
+
+```{r logistic-reg, echo = FALSE, fig.width=6, fig.height=4}
+measles$statefac = relevel(measles$statefac, ref = "Arkansas")
+
+measlereg <- glm(cbind(numvaxx, unvaxx) ~ statefac, data=measles, family = binomial)
+tidy(measlereg, exponentiate = TRUE) %>%
+    knitr::kable(caption="Output for Logistic Regression")
+```
+
+---
+
+##Linear Regression
+
+```{r linreg-vaxbyincome, echo = FALSE}
+linear_reg() %>%
+ set_engine("lm") %>%
+  fit(statemean ~ estimate, data = incomerates) %>%
+  tidy() %>%
+  knitr::kable(caption="Output for Linear Regression with Respect to Income")
+```
+
+---
+
+## Linear Regression Graph
+
+```{r linreg-vaxbyincomegraph, echo=FALSE}
+ggplot(incomerates, aes(x = estimate, y=statemean)) +
+  geom_point(alpha = 0.1) +
+  geom_smooth(method = "lm", se = FALSE) +
+labs(x = "Average State Income", y="State Mean Vax Rate", title = "State Mean Vax Rate by Average State Income")
+```
+---
+
+## Linear Regression Equation
+
+Equation for predicting state mean vax rate: $\hat{y} = 81.60 + 0.0004092 * x_i$
+
+---
+
+## Summary
+
+-There is a relationship between overall vaccination rate and type of school
+
+--
+
+-Charter schools had the lowest vaccination rate, public schools had the highest
+
+--
+
+-Vaccination rate and state
+
+-Vaccination rate and median state income
+
+---
+
+class: inverse, middle, center
+
+# Further research
+
