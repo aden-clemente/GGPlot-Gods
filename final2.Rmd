@@ -56,8 +56,8 @@ population <- get_acs(geography = "state",
 
 
 #Research Question
- 
-How do measles vaccination rates vary across the country and demographics in schools?
+
+We are choosing to study a data set about Measles Vaccination rates in schools across the country. This data set pulls from 46,412 schools across 32 states in the years of 2017-2019. The data comes from a Wall Street Journal article published in October 2019 called “What’s the Measles Vaccination Rate at Your Child’s School?”. The article discusses how increasing rates of unvaccinated people caused a high number of measles cases in the beginning of 2019. The Wall Street Journal compiled the data by reaching out to state health departments for kindergarten rates for individual schools across the country. It is important to note that there is not a universal method for collecting and keeping track of immunization rates so each state’s data set is slightly different. The World Health Organization recommends a 95% vaccination rate among elementary schools.  Thus, our overarching research question is: How do measles vaccination rates vary across the country and different types of schools? 
  
 realrate vaccination status vs. state,
 realrate vaccination status vs. type of school,
@@ -66,8 +66,18 @@ exemption vs. type of school.
 To analyze vaccination and exemption rates by states, we will use spatial data to show the change in these rates across the country.
 Then, we can use two-sample t-tests to test for significance of vaccination and exemption rates between different types of schools.
 If there are significantly lower vaccination rates in private schools vs. other types of schools, this will support our main hypothesis.
- 
 
+# Data Wrangling
+
+Our data had significant inconsistencies across different states and school types, which required that we consolidate certain variables. Also, we needed to create several categorical variables corresponding to continuous ones in order to be able to conduct logistic regression. The major changes to the dataset are outlined below. 
+  
+  For most schools, a value was only provided for one of the "overall" (overall vaccination rate) and "mmr" (measles, mumps, and rubella vaccination rate) variables. Choosing to conduct our analyses on one of these variables would entail losing a massive number of observations. So, we created a new variable, "realrate," which took on the value of "overall" if present and the value of "mmr" otherwise. This way, we are able to retain most observations from the data set. However, this may have unfairly increased the vaccination rates of types of schools or states which favored reporting mmr rates over overall rates, since the mmr rate can only be equal to or greater than the overall rate.
+  
+  We eliminated California, Colorado, and Ohio from our analysis because these states had only 1, 2, and 2 observations, respectively. All other states had over 200 observations.
+  
+  In regards to school type, we kept all types in the dataset since the lowest was “nonpublic” at a count of 18. However, due to the relatively low number of nonpublic and BOCES schools (which had a count of 47), the majority of our analysis by type of school was conducted between private, public, and charter schools.
+                     
+  We created the numvaxx and unvaxx variables by using overall vax rates and enrollment rates of each school to be able to plot a logistic regression -- this wouldn’t have worked otherwise because both the predictor (state) and response (vax rate) have to be categorical, not continuous as the overall vax rate would have been.
 ```{r variables, echo = FALSE}
 measles <- measles %>%
   mutate(realrate = ifelse(mmr == -1, overall, 
@@ -78,7 +88,7 @@ measles <- measles %>%
   filter(!state %in% c("California", "Colorado", "Ohio")) %>%
   
   mutate(numvaxx = round(enroll*realrate*.01)) %>%
-  mutate(unvaxx = enroll - numvaxx)%>%
+  mutate(unvaxx = enroll - numvaxx) %>%
   
   mutate(numxmed = round(enroll*.01*xmed)) %>%
   mutate(numxmed = ifelse(is.na(numxmed), 0, numxmed)) %>%
@@ -278,26 +288,25 @@ measles <- measles %>%
 ```
  
 
-```{r join-income-statemean, echo = FALSE}
+```{r join-income-statemean, echo = FALSE, include = FALSE}
 incomerates <- left_join(measles, income, by = c("state" = "NAME"))
 
-incomerates
 ```
  
 # Exploratory Data Analysis
-```{r count-type, echo = FALSE}
-#measles %>%
- # group_by(type) %>%
- # count(type)
+```{r count-type, echo = FALSE, include = FALSE, message = FALSE}
+measles %>%
+group_by(type) %>%
+count(type)
 ```
 
-```{r count-states, echo = FALSE}
-#measles %>%
- # count(state)
+```{r count-states, echo = FALSE, message = FALSE, include = FALSE}
+measles %>%
+count(state)
 ```
 
 
-```{r bar, echo = FALSE}
+```{r rates-bar, echo = FALSE}
 measles %>%
   group_by(type) %>%
   mutate(averagevax = mean(realrate)) %>%
@@ -306,6 +315,11 @@ measles %>%
   ggplot(aes(x = type, y = averagevax)) +
   geom_col() +
   labs(title = "Measles Vaccination Rates Across Different School Types", x = "School Type", y = "Pecentage of Students Vaccinated")
+```
+
+
+Looking at the y axis for these 4 graphs, it is evident that personal exemption rates are the most common type of exemption among all of the school types. Personal exemptions have the highest rate in charter schools. Additionally, private schools have higher religious and medical exemption rates than public schools. Overall, we can see that charter schools have the lowest measles vaccination rates. These graphs demonstrate that one is most likely to be unvaccinated and have an exemption at a charter school. However it is important to note that because the percentage differences are so small we do not know for certain that these differences are not due to random variation until we do more tests on the difference in vaccination rates in different types of schools.
+```{r exempt-bars, echo=FALSE}
 measles %>%
   mutate(xrel = ifelse(is.na(xrel), 0, xrel)) %>%
   group_by(type) %>%
@@ -335,7 +349,7 @@ measles %>%
   labs(title = "Medical Exemption Rates Across Different School Types", x = "School Type", y = "Pecentage of Students with Medical Exemption")
 ```
 
-
+From the overall vaccination rate by state graph we can see that Illinois has the highest vaccination rate and Arkansas has the lowest. Comparatively, Idaho and Wisconsin have low vaccination rates at roughly 82.5% and 86% respectively. The rest of the states all have vaccination rates ranging from roughly 91% to 97.5%. Although it is expected that the overall vaccination rate to be lower than the measles, mumps and rubella rate, it is alarming that only 7 about 7 states are clearly above the 95% vaccination rate recommended by the World Health Organization (WHO).
 ```{r vaxbystate, echo = FALSE}
 measles %>%
   ggplot(aes(x = statemean, y = reorder(state, statemean))) +
@@ -354,10 +368,10 @@ plot_usmap(data=plotdata, values = "statemean") +
   theme(panel.background = element_rect(color = "black", fill = "lightblue"))
 ```
  
-
+We loaded data from tidycensus to find the median income by state, as a way to compare income rates with vaccination rates later on. After graphing, it is shown that Connecticut, New Jersey, and Massachusetts have the highest median income, with Connecticut having an estimated value of $36,515. Idaho and Arkansas have the lowest, with Arkansas having a median income of $24,977. This is good to note, as these two states also have the lowest vaccination rate by state. So, it is possible that there is a connection between state vaccination rate and median state income, which we will explore later with a linear regression.
 ```{r income-graph, echo = FALSE}
 income %>%
-  filter(NAME %in% c("Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Florida", "Idaho", "Illinois", "Iowa", "Maine", "Massachusetts", "Michigan", "Minnesota", "Missouri", "Montana", "New Jersey", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "Wisconsin")) %>%
+  filter(NAME %in% c("Arizona", "Arkansas", "Connecticut", "Florida", "Idaho", "Illinois", "Iowa", "Maine", "Massachusetts", "Michigan", "Minnesota", "Missouri", "Montana", "New Jersey", "New York", "North Carolina", "North Dakota", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "Wisconsin")) %>%
   ggplot(aes(x = estimate, y = reorder(NAME, estimate))) +
   geom_point() +
   scale_y_discrete() +
@@ -365,9 +379,6 @@ income %>%
 ```
 
 # T-Tests and ANOVA
-```{r vaxbystateanova, echo=FALSE}
-summary(aov(realrate~state,data=measles))
-```
 
 ```{r vaxbytypefilter, echo=FALSE}
 measles3 <- measles %>%
@@ -381,15 +392,25 @@ measles5 <- measles %>%
   
 ```
 
+
+We conducted three separate t-tests to evaluate the difference in vaccination rate between three different types of schools -- public, private, and charter. In the first t-test, between private and public, the p-value is less than 0.05 so we can reject the null hypothesis that the two have the same means. The private school mean overall vaccination rate is 93.48%, and the public school mean is 97.01%. Between charter and public, the p-value is also below 0.05, so we can reject the null hypothesis that the two have the same mean overall vaccination rate. The charter mean is 87.96%. The last t-test was conducted between charter and private, with the p-value being less than 0.05, so we can reject the null hypothesis that the two are equal. From these tests we can see that out of the three, public schools have the highest mean vaccination rates, so you are more likely to be vaccinated if you go to a public school over a private or charter school. The difference between the three school types is quite large, especially when combined with the earlier information that WHO recommends a vaccination rate of 95%. Only public schools reach this percentage on average.
 ```{r vaxbytype-ttest, echo=FALSE}
-t.test(measles3$realrate~measles3$type)
+t.test(measles3$realrate~measles3$type) %>%
+  tidy() %>%
+  knitr::kable(caption="Output for T-Test between Public and Private Schools")
 
-t.test(measles4$realrate~measles4$type)
+t.test(measles4$realrate~measles4$type) %>%
+  tidy() %>%
+  knitr::kable(caption="Output for T-Test between Public and Charter Schools")
 
-t.test(measles5$realrate~measles5$type)
+t.test(measles5$realrate~measles5$type) %>%
+  tidy() %>%
+  knitr::kable(caption="Output for T-Test between Private and Charter Schools")
 
 ```
-
+```{r vaxbystateanova, echo=FALSE}
+summary(aov(realrate~state,data=measles))
+```
 
 # Regression Analysis
 ```{r logistic-reg, echo = FALSE}
@@ -397,16 +418,21 @@ measles$statefac = relevel(measles$statefac, ref = "Arkansas")
 
 measlereg <- glm(cbind(numvaxx, unvaxx) ~ statefac, data=measles, family = binomial)
 measlereg
-summary(measlereg)
+summary(measlereg, exponentiate = TRUE)
+
+
 ```
 
 
+For every \$1000 increase in the state’s median income we expect the state mean vaccination rate to increase by 0.4092%. The line shows a positive relationship between average state income and state mean vaccination rate. There seems to be 3 outliers at the average state income of roughly \$25,000, \$26,000, $31,000.
 
+Equation for predicting state mean vax rate: $\hat{y} = 81.60 + 0.0004092 * x_i$
 ```{r linreg-vaxbyincome, echo = FALSE}
 linear_reg() %>%
  set_engine("lm") %>%
   fit(statemean ~ estimate, data = incomerates) %>%
-  print()
+  tidy() %>%
+  knitr::kable(caption="Output for Linear Regression with Respect to Income")
 
 ggplot(incomerates, aes(x = estimate, y=statemean)) +
   geom_point(alpha = 0.1) +
@@ -414,6 +440,6 @@ ggplot(incomerates, aes(x = estimate, y=statemean)) +
 labs(x = "Average State Income", y="State Mean Vax Rate", title = "State Mean Vax Rate by Average State Income")
 ```
 
-Equation for predicting state mean vax rate: $\hat{y} = 81.60 + 0.0004092 * x_i$
+
 
 
