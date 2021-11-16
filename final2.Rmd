@@ -34,39 +34,25 @@ Sys.getenv("CENSUS_API_KEY")
 
 
 
-```{r get-income-data, echo = FALSE}
+```{r get-income-data, echo = FALSE, message = FALSE, warning = FALSE}
 income <- get_acs(geography = "state", 
                        variables = "B07011_001",
                        year = 2018)
 ```
 
 
-```{r get-race-data, echo = FALSE}
+```{r get-race-data, echo = FALSE, message = FALSE, warning= FALSE}
 race <- get_acs(geography = "state", 
                        variables = "B02001_002",
                        year = 2018)
 ```
 
 
-```{r get-population-data, echo = FALSE}
+```{r get-population-data, echo = FALSE, warning=FALSE, message=FALSE}
 population <- get_acs(geography = "state", 
                        variables = "B01003_001",
                        year = 2018)
 ```
-
-
-#Research Question
- 
-How do measles vaccination rates vary across the country and demographics in schools?
- 
-realrate vaccination status vs. state,
-realrate vaccination status vs. type of school,
-each type of exemption (personal, religious, and medical) vs. state
-exemption vs. type of school.
-To analyze vaccination and exemption rates by states, we will use spatial data to show the change in these rates across the country.
-Then, we can use two-sample t-tests to test for significance of vaccination and exemption rates between different types of schools.
-If there are significantly lower vaccination rates in private schools vs. other types of schools, this will support our main hypothesis.
- 
 
 ```{r variables, echo = FALSE}
 measles <- measles %>%
@@ -98,6 +84,9 @@ measles <- measles %>%
   mutate(statemean = mean(realrate))
 ```
 
+```{r join-income-statemean, echo = FALSE}
+incomerates <- left_join(measles, income, by = c("state" = "NAME"))
+```
 
 ```{r nacheck, echo = FALSE}
 #measles2 <- measles %>%
@@ -277,12 +266,6 @@ measles <- measles %>%
 #  labs(title = "Vaccination Rates Across Different School Types", x = "School Type", y = "Pecentage of Students Vaccinated")
 ```
  
-
-```{r join-income-statemean, echo = FALSE}
-incomerates <- left_join(measles, income, by = c("state" = "NAME"))
-
-incomerates
-```
  
 # Exploratory Data Analysis
 ```{r count-type, echo = FALSE}
@@ -297,7 +280,7 @@ incomerates
 ```
 
 
-```{r bar, echo = FALSE}
+```{r bar, echo = FALSE, fig.width= 6, fig.height= 4}
 measles %>%
   group_by(type) %>%
   mutate(averagevax = mean(realrate)) %>%
@@ -305,7 +288,8 @@ measles %>%
   distinct() %>%
   ggplot(aes(x = type, y = averagevax)) +
   geom_col() +
-  labs(title = "Measles Vaccination Rates Across Different School Types", x = "School Type", y = "Pecentage of Students Vaccinated")
+  labs(title = "Measles Vaccination Rates Across Different School Types", 
+       x = "School Type", y = "Pecentage of Students Vaccinated")
 measles %>%
   mutate(xrel = ifelse(is.na(xrel), 0, xrel)) %>%
   group_by(type) %>%
@@ -314,7 +298,8 @@ measles %>%
   distinct() %>%
   ggplot(aes(x = type, y = averagerel)) +
   geom_col() +
-  labs(title = "Religious Exemption Rates Across Different School Types", x = "School Type", y = "Pecentage of Students with Religious Exemption")
+  labs(title = "Religious Exemption Rates Across Different School Types", 
+       x = "School Type", y = "Pecentage of Students with Religious Exemption")
 measles %>%
   mutate(xper = ifelse(is.na(xper), 0, xper)) %>%
   group_by(type) %>%
@@ -323,7 +308,8 @@ measles %>%
   distinct() %>%
   ggplot(aes(x = type, y = averageper)) +
   geom_col() +
-  labs(title = "Personal Exemption Rates Across Different School Types", x = "School Type", y = "Pecentage of Students with Personal Exemption")
+  labs(title = "Personal Exemption Rates Across Different School Types", 
+       x = "School Type", y = "Pecentage of Students with Personal Exemption")
 measles %>%
   mutate(xmed = ifelse(is.na(xmed), 0, xmed)) %>%
   group_by(type) %>%
@@ -332,11 +318,12 @@ measles %>%
   distinct() %>%
   ggplot(aes(x = type, y = averagemed)) +
   geom_col() +
-  labs(title = "Medical Exemption Rates Across Different School Types", x = "School Type", y = "Pecentage of Students with Medical Exemption")
+  labs(title = "Medical Exemption Rates Across Different School Types", 
+       x = "School Type", y = "Pecentage of Students with Medical Exemption")
 ```
 
 
-```{r vaxbystate, echo = FALSE}
+```{r vaxbystate, echo = FALSE, fig.width=6, fig.height=4}
 measles %>%
   ggplot(aes(x = statemean, y = reorder(state, statemean))) +
   geom_point() +
@@ -344,7 +331,7 @@ measles %>%
 ```
 
  
-```{r vaxbystatemap, echo = FALSE}
+```{r vaxbystatemap, echo = FALSE, fig.width=6, fig.height=4}
 plotdata <- measles %>%
 filter(realrate != (-1)) %>%
 group_by(state) %>%
@@ -355,7 +342,7 @@ plot_usmap(data=plotdata, values = "statemean") +
 ```
  
 
-```{r income-graph, echo = FALSE}
+```{r income-graph, echo = FALSE, fig.width=6, fig.height=4}
 income %>%
   filter(NAME %in% c("Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Florida", "Idaho", "Illinois", "Iowa", "Maine", "Massachusetts", "Michigan", "Minnesota", "Missouri", "Montana", "New Jersey", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "Wisconsin")) %>%
   ggplot(aes(x = estimate, y = reorder(NAME, estimate))) +
@@ -402,7 +389,7 @@ summary(measlereg)
 
 
 
-```{r linreg-vaxbyincome, echo = FALSE}
+```{r linreg-vaxbyincome, echo = FALSE, fig.width=6, fig.height=4}
 linear_reg() %>%
  set_engine("lm") %>%
   fit(statemean ~ estimate, data = incomerates) %>%
