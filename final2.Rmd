@@ -5,7 +5,7 @@ author: "Lindsey Weyant, Ali Raich, Aden Clemente"
 date: "11/16/21"
 output: pdf_document
 ---
-```{r load-packages, message = FALSE, warning = FALSE, echo = FALSE}
+```{r load-packages, message = FALSE, warning = FALSE, echo = FALSE, include = FALSE}
 library(tidyverse)
 library(tidymodels)
 library(sf)
@@ -20,7 +20,7 @@ measles <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/ti
 ```
  
 
-```{r key, echo = FALSE, message = FALSE, warning = FALSE}
+```{r key, echo = FALSE, message = FALSE, warning = FALSE, include = FALSE}
 census_api_key("abc8289fa2ba274ced76d97c7f8ee31666a2c931", overwrite = TRUE, install = TRUE)
  
 if (FALSE) {
@@ -34,21 +34,21 @@ Sys.getenv("CENSUS_API_KEY")
 
 
 
-```{r get-income-data, echo = FALSE, message = FALSE, warning = FALSE}
+```{r get-income-data, echo = FALSE, message = FALSE, warning = FALSE, include = FALSE}
 income <- get_acs(geography = "state", 
                        variables = "B07011_001",
                        year = 2018)
 ```
 
 
-```{r get-race-data, echo = FALSE, message = FALSE, warning= FALSE}
+```{r get-race-data, echo = FALSE, message = FALSE, warning= FALSE, include = FALSE}
 race <- get_acs(geography = "state", 
                        variables = "B02001_002",
                        year = 2018)
 ```
 
 
-```{r get-population-data, echo = FALSE, warning=FALSE, message=FALSE}
+```{r get-population-data, echo = FALSE, warning=FALSE, message=FALSE, include = FALSE}
 population <- get_acs(geography = "state", 
                        variables = "B01003_001",
                        year = 2018)
@@ -313,11 +313,24 @@ measles %>%
   distinct() %>%
   ggplot(aes(x = type, y = averagevax)) +
   geom_col() +
-  labs(title = "Measles Vaccination Rates Across Different School Types", x = "School Type", y = "Pecentage of Students Vaccinated")
+  labs(title = "Overall Vaccination Rates Across Different School Types", x = "School Type", y = "Pecentage of Students Vaccinated")
 ```
 
 
 Looking at the y axis for these 4 graphs, it is evident that personal exemption rates are the most common type of exemption among all of the school types. Personal exemptions have the highest rate in charter schools. Additionally, private schools have higher religious and medical exemption rates than public schools. Overall, we can see that charter schools have the lowest measles vaccination rates. These graphs demonstrate that one is most likely to be unvaccinated and have an exemption at a charter school. However it is important to note that because the percentage differences are so small we do not know for certain that these differences are not due to random variation until we do more tests on the difference in vaccination rates in different types of schools.
+
+```{r filled-bargraph, echo = FALSE}
+measles %>%
+  pivot_longer(cols = numxmed:numxother, names_to="group", values_to="count") 
+
+# %>%
+#   group_by() %>%
+#   summarize(finalcount = sum(count)) %>%
+#   group_by(type)
+
+
+```
+
 ```{r exempt-bars, echo=FALSE}
 measles %>%
   mutate(xrel = ifelse(is.na(xrel), 0, xrel)) %>%
@@ -413,8 +426,11 @@ t.test(measles5$realrate~measles5$type) %>%
   knitr::kable(caption="Output for T-Test between Private and Charter Schools")
 
 ```
+
+
 ```{r vaxbystateanova, echo=FALSE}
-summary(aov(realrate~state,data=measles))
+tidy(aov(realrate~state,data=measles)) %>%
+  knitr::kable(caption="ANOVA")
 ```
 
 # Regression Analysis
@@ -423,9 +439,8 @@ measles$statefac = relevel(measles$statefac, ref = "Arkansas")
 
 measlereg <- glm(cbind(numvaxx, unvaxx) ~ statefac, data=measles, family = binomial)
 measlereg
-summary(measlereg, exponentiate = TRUE)
-
-
+tidy(measlereg, exponentiate = TRUE) %>%
+    knitr::kable(caption="Output for Logistic Regression")
 ```
 
 
