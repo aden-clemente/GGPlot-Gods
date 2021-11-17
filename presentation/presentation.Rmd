@@ -19,6 +19,7 @@ output:
 library(tidyverse)
 library(tidymodels)
 library(knitr)
+library(kableExtra)
 library(xaringanthemer)
 library(sf)
 library(viridis)
@@ -290,7 +291,7 @@ t.test(measles5$realrate~measles5$type) %>%
 
 ```{r vaxbystateanova, echo=FALSE}
 tidy(aov(realrate~state,data=measles)) %>%
-  knitr::kable(caption="ANOVA")
+  knitr::kable(caption="ANOVA", format="html")
 ```
 
 ---
@@ -308,7 +309,8 @@ measles$statefac = relevel(measles$statefac, ref = "Arkansas")
 
 measlereg <- glm(cbind(numvaxx, unvaxx) ~ statefac, data=measles, family = binomial)
 tidy(measlereg, exponentiate = TRUE) %>%
-    knitr::kable(caption="Output for Logistic Regression")
+    knitr::kable(caption="Output for Logistic Regression", format="html") %>%
+  kable_styling(font_size=7)
 ```
 
 ---
@@ -320,7 +322,7 @@ linear_reg() %>%
  set_engine("lm") %>%
   fit(statemean ~ estimate, data = incomerates) %>%
   tidy() %>%
-  knitr::kable(caption="Output for Linear Regression with Respect to Income")
+  knitr::kable(caption="Output for Linear Regression with Respect to Income", format="html")
 ```
 
 ---

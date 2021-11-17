@@ -6,6 +6,8 @@
     <meta name="author" content="GGPlot Gods   Lindsey Weyant, Ali Raich, Aden Clemente" />
     <meta name="date" content="2021-11-17" />
     <script src="libs/header-attrs-2.11/header-attrs.js"></script>
+    <script src="libs/kePrint-0.0.1/kePrint.js"></script>
+    <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
     <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
   </head>
   <body>
@@ -230,13 +232,37 @@ class: inverse, middle, center
 
 ## ANOVA
 
-
-Table: ANOVA
-
-|term      |    df|     sumsq|      meansq| statistic| p.value|
-|:---------|-----:|---------:|-----------:|---------:|-------:|
-|state     |    25|  516286.4| 20651.45612|  320.7196|       0|
-|Residuals | 39479| 2542092.1|    64.39099|        NA|      NA|
+&lt;table&gt;
+&lt;caption&gt;ANOVA&lt;/caption&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; term &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; df &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; sumsq &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; meansq &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; statistic &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; p.value &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; state &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 25 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 516286.4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 20651.45612 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 320.7196 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Residuals &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 39479 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2542092.1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 64.39099 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
 
 ---
 
@@ -248,41 +274,179 @@ class: inverse, middle, center
 
 ##Logistic Regression
 
-
-Table: Output for Logistic Regression
-
-|term                   |  estimate| std.error| statistic| p.value|
-|:----------------------|---------:|---------:|---------:|-------:|
-|(Intercept)            |  4.072161| 0.0046249| 303.60851|       0|
-|statefacArizona        |  3.370289| 0.0143644|  84.58427|       0|
-|statefacFlorida        |  3.379824| 0.0093171| 130.70867|       0|
-|statefacIllinois       | 10.359710| 0.0061598| 379.54404|       0|
-|statefacIowa           |  6.067351| 0.0095512| 188.76406|       0|
-|statefacMaine          |  3.693512| 0.0262128|  49.84498|       0|
-|statefacMichigan       |  3.215546| 0.0113500| 102.90705|       0|
-|statefacMinnesota      |  3.361359| 0.0138015|  87.84142|       0|
-|statefacMontana        |  2.599367| 0.0111232|  85.88081|       0|
-|statefacNew Jersey     |  6.592150| 0.0170592| 110.54917|       0|
-|statefacNorth Carolina |  6.903029| 0.0156597| 123.37174|       0|
-|statefacNorth Dakota   |  3.586700| 0.0336633|  37.94139|       0|
-|statefacPennsylvania   |  8.292260| 0.0167164| 126.54160|       0|
-|statefacRhode Island   |  5.622851| 0.0480118|  35.96695|       0|
-|statefacSouth Dakota   |  7.430762| 0.0507160|  39.54630|       0|
-|statefacTennessee      |  4.569600| 0.0161181|  94.26834|       0|
-|statefacUtah           |  5.426775| 0.0101558| 166.54017|       0|
-|statefacVirginia       |  3.454342| 0.0138466|  89.52595|       0|
+&lt;table class="table" style="font-size: 7px; margin-left: auto; margin-right: auto;"&gt;
+&lt;caption style="font-size: initial !important;"&gt;Output for Logistic Regression&lt;/caption&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; term &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; estimate &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; std.error &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; statistic &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; p.value &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; (Intercept) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4.072161 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0046249 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 303.60851 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; statefacArizona &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3.370289 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0143644 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 84.58427 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; statefacFlorida &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3.379824 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0093171 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 130.70867 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; statefacIllinois &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 10.359710 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0061598 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 379.54404 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; statefacIowa &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6.067351 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0095512 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 188.76406 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; statefacMaine &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3.693512 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0262128 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 49.84498 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; statefacMichigan &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3.215546 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0113500 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 102.90705 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; statefacMinnesota &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3.361359 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0138015 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 87.84142 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; statefacMontana &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.599367 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0111232 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 85.88081 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; statefacNew Jersey &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6.592150 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0170592 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 110.54917 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; statefacNorth Carolina &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6.903029 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0156597 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 123.37174 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; statefacNorth Dakota &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3.586700 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0336633 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 37.94139 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; statefacPennsylvania &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8.292260 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0167164 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 126.54160 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; statefacRhode Island &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5.622851 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0480118 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 35.96695 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; statefacSouth Dakota &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 7.430762 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0507160 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 39.54630 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; statefacTennessee &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4.569600 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0161181 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 94.26834 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; statefacUtah &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5.426775 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0101558 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 166.54017 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; statefacVirginia &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3.454342 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0138466 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 89.52595 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
 
 ---
 
 ##Linear Regression
 
-
-Table: Output for Linear Regression with Respect to Income
-
-|term        |   estimate| std.error| statistic| p.value|
-|:-----------|----------:|---------:|---------:|-------:|
-|(Intercept) | 81.6017595| 0.1836077| 444.43548|       0|
-|estimate    |  0.0004092| 0.0000060|  68.64739|       0|
+&lt;table&gt;
+&lt;caption&gt;Output for Linear Regression with Respect to Income&lt;/caption&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; term &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; estimate &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; std.error &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; statistic &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; p.value &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; (Intercept) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 81.6017595 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1836077 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 444.43548 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; estimate &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0004092 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0000060 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 68.64739 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
 
 ---
 
