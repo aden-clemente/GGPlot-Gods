@@ -310,7 +310,7 @@ measles$statefac = relevel(measles$statefac, ref = "Arkansas")
 measlereg <- glm(cbind(numvaxx, unvaxx) ~ statefac, data=measles, family = binomial)
 tidy(measlereg, exponentiate = TRUE) %>%
     knitr::kable(caption="Output for Logistic Regression", format="html") %>%
-  kable_styling(font_size=7)
+  kable_styling(font_size=10)
 ```
 
 ---
