@@ -251,7 +251,7 @@ plot_usmap(data=plotdata, values = "statemean") +
 
 ```{r income-graph, echo = FALSE, fig.width=6, fig.height=4}
 income %>%
-  filter(NAME %in% c("Arizona", "Arkansas", "Connecticut", "Florida", "Idaho", "Illinois", "Iowa", "Maine", "Massachusetts", "Michigan", "Minnesota", "Missouri", "Montana", "New Jersey", "New York", "North Carolina", "North Dakota", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "Wisconsin")) %>%
+  filter(NAME %in% c("Arizona", "Arkansas", "Connecticut", "Florida", "Idaho", "Illinois", "Iowa", "Maine", "Massachusetts", "Michigan", "Minnesota", "Missouri", "Montana", "New Jersey", "New York", "North Carolina", "North Dakota", "Oklahoma", "Pennsylvania", "Rhode Island", "South Dakota", "Tennessee", "Texas", "Utah", "Virginia", "Wisconsin")) %>%
   ggplot(aes(x = estimate, y = reorder(NAME, estimate))) +
   geom_point() +
   scale_y_discrete() +
