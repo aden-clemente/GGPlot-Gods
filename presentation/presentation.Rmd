@@ -228,6 +228,15 @@ measles %>%
 
 ---
 
+```{r vaxbystate, echo = FALSE, fig.width=6, fig.height=4}
+measles %>%
+  ggplot(aes(x = statemean, y = reorder(state, statemean))) +
+  geom_point() +
+  labs(x = "Vaccination Rate", y = "State", title = "Vaccination Rate by State")
+```
+
+---
+
 ```{r vaxbystatemap, echo=FALSE}
 plotdata <- measles %>%
 filter(realrate != (-1)) %>%
