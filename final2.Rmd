@@ -69,7 +69,7 @@ Our data had significant inconsistencies across different states and school type
   
   In regards to school type, we kept all types in the dataset since the lowest was “nonpublic” at a count of 18. However, due to the relatively low number of nonpublic and BOCES schools (which had a count of 47), the majority of our analysis by type of school was conducted between private, public, and charter schools.
                      
-  We created the numvaxx and unvaxx variables by using overall vax rates and enrollment rates of each school to be able to plot a logistic regression -- this wouldn’t have worked otherwise because both the predictor (state) and response (vax rate) have to be categorical, not continuous as the overall vax rate would have been.
+  We created the "numvaxx" and "unvaxx" variables by using overall vaccination rates and enrollment rates of each school to be able to plot a logistic regression -- this wouldn’t have worked otherwise because both the predictor (state) and response (vax rate) have to be categorical, not continuous as the overall vaccination rate would have been.
 ```{r variables, echo = FALSE}
 measles <- measles %>%
   mutate(realrate = ifelse(mmr == -1, overall, 
